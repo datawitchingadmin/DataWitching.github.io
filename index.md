@@ -2,15 +2,26 @@
 
 這裡是勘泉數據的CodeLabs網頁
 
-這個網頁列出一系列的課程，主要是用CodeLabs的方式，提供
+這個網頁列出一系列的課程，主要是用CodeLabs的方式，提供初學者練習。
 
-You can use the [editor on GitHub](https://github.com/datawitchingadmin/DataWitching.github.io/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
 ### 用Incorta的環境來學習Spark SQL
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+內容加在此
+
+
+### 如何更改這個網頁或是創建新的網頁
+
+這個網頁是架構在Github裡
+我們可以用GitHub內建的編輯器[editor on GitHub](https://github.com/datawitchingadmin/DataWitching.github.io/edit/gh-pages/index.md) 來編輯這個網頁
+
+當我們commit這個網頁的修改到github之後，GitHub就會重新自動修改，我們的網站上的網頁。
+
+### 用Markdown來修改網頁的內容
+
+Markdown 是一種描述網頁的格式的簡易語言。 a lightweight and easy-to-use syntax for styling your writing. 
+
+以下是常見的功能：
 
 ```markdown
 Syntax highlighted code block
@@ -32,10 +43,9 @@ Syntax highlighted code block
 
 For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
-### Jekyll Themes
+### 我們用的是 Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/datawitchingadmin/DataWitching.github.io/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+Themes決定了網頁的風格。
+這個網頁的Theme 是在 [repository settings](https://github.com/datawitchingadmin/DataWitching.github.io/settings/pages) 修改而儲存在 `_config.yml` 這個檔案裡。
 
-### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
