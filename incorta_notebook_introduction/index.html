@@ -1,0 +1,139 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Incorta Notebook 環境介紹</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="incorta_notebook_introduction"
+                  title="Incorta Notebook 環境介紹"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="開啟 Incorta Notebook" duration="0">
+        <p class="image-container"><img style="width: 601.70px" src="img/53619edbfa61f34e.png"></p>
+<p><strong>Last Updated:</strong> 2022-07-27</p>
+<h2 is-upgraded><strong>用建立SQL Materialized View(MV)的方式來打開Incorta Notebook</strong></h2>
+<p>Schema →  +New →  Material View →  Choose Language →  Edit in Notebook</p>
+<p class="image-container"><img style="width: 601.70px" src="img/935b6c3ec7f0144d.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/e4cb505d2da8c7d7.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/89348b90ad7010e8.png"></p>
+<p>一個Notebook有好幾個Paragraph</p>
+<p>當Notebook用來編輯SQL的時候，可以有很多個Query但是只會有一個被用來Query資料</p>
+<p>每個MV是結果的儲存，在Incorta的平台裡，它的作用是做資料的整合</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="編輯一個SQL" duration="0">
+        <p><code>sql% 下面可以寫 Query</code></p>
+<h2 is-upgraded><strong>Overview the data</strong></h2>
+<p><code>SELECT * FROM [schema].[table]</code></p>
+<h2 is-upgraded>Example</h2>
+<pre><code>%sql
+SELECT * FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<aside class="special"><p><strong>TIP: </strong>Schema (結構資料集）和Table（資料表）的名稱會自動彈出，供你選擇</p>
+</aside>
+<p class="image-container"><img style="width: 601.70px" src="img/d6295c777a761a00.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="看看資料表的結構" duration="0">
+        <h2 is-upgraded><strong>Structure of the data</strong></h2>
+<p>藉由 <code>DESC</code> 可以查看資料表的結構，可以看到 column name, data type, comment</p>
+<p><code>DESC [schema].[table]</code></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%sql
+DESC NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/843e57389d2530c6.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="可以改寫SQL" duration="0">
+        <p>可以寫 SQL 來分析資料</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>查看每個租借自行車站，最早被租借時間和最近被租借時間，可以觀察到設站時間或是撤站時間</p>
+<pre><code>%sql
+SELECT start_station_id, 
+       min(starttime_as_timestamp) first_starttime,
+       max(starttime_as_timestamp) lastest_starttime
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY start_station_id
+ORDER BY min(starttime_as_timestamp)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/f47334de3122d137.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="使用Incorta Notebook繪製資料圖" duration="0">
+        <h2 is-upgraded><strong>繪製資料圖</strong></h2>
+<p>Incorta Notebook 可以繪製各種資料圖</p>
+<p>分別有 Bar Chart、Pie Chart、Area Chart、Line Chart、Scatter Chart</p>
+<p>可以依需求自行決定，直接點選圖標即可轉換</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<h3 is-upgraded>Frequency of renting each year</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/20b46df1970b9234.png"></p>
+<h3 is-upgraded>Bar Chart</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/c06370ebebfdfcb9.png"></p>
+<h3 is-upgraded>Pie Chart</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/e8fef5a1bdbbe25d.png"></p>
+<h3 is-upgraded>Area Chart</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/e6daba9f3e1b8f6a.png"></p>
+<h3 is-upgraded>Line Chart</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/54b554912d805708.png"></p>
+<h3 is-upgraded>Scatter Chart</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/7bb5ecd0f0b90c48.png"></p>
+<h3 is-upgraded>Settings</h3>
+<p>點進 Settings 可以編輯 keys, groups, values ，拖拉variavles即可，也可以更改 xAxis方向</p>
+<p class="image-container"><img style="width: 601.70px" src="img/61f8f388caa16134.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="選擇一個SQL儲存為MV" duration="0">
+        <p>點擊 Paragraph 右上角 ⊕ ，使他變成綠色勾勾✅，即代表儲存此 paragrph 為 Materialized View</p>
+<p>每一個 Notebook 僅儲存一個 paragraph 為 Materialized View</p>
+<p class="image-container"><img style="width: 601.70px" src="img/76e23e231997cd2d.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/be8beb5fe0bbcdd5.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="參考資料" duration="0">
+        <h2 is-upgraded>Getting Started with Incorta Notebook</h2>
+<p><a href="https://community.incorta.com/t5/getting-started-knowledgebase/getting-started-with-incorta-notebook/ta-p/2007" target="_blank">https://community.incorta.com/t5/getting-started-knowledgebase/getting-started-with-incorta-notebook/ta-p/2007</a></p>
+<h2 is-upgraded>Use Keyboard Shortcuts within an Incorta Notebook</h2>
+<p><a href="https://community.incorta.com/t5/data-schemas-knowledgebase/use-keyboard-shortcuts-within-an-incorta-notebook/ta-p/1983" target="_blank">https://community.incorta.com/t5/data-schemas-knowledgebase/use-keyboard-shortcuts-within-an-incorta-notebook/ta-p/1983</a></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
