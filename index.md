@@ -15,7 +15,7 @@ Unit 3: [Data Preprocessing - Column Name]()
 
 Unit 4: [Data Preprocessing - to_timestamp]()
 
-Unit 5: [Basic SQL](codelabs/Basic_SQL/)
+Unit 5: [Basic SQL](Basic_SQL/)
 
 Unit 6: [Date Functions & Timestamp Functions]()
 
