@@ -7,7 +7,7 @@
 
 ### 用Incorta的環境來學習Spark SQL
 
-Unit 1: [Incorta Notebook 環境介紹](https://www.google.com)
+Unit 1: [Incorta Notebook 環境介紹](incorta_notebook_introduction/)
 
 Unit 2: [Load NYC CitiBike Data](Load_NYC_CitiBike_Data/)
 
