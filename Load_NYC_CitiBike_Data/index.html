@@ -1,0 +1,223 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>下載 NYC CitiBike 資料</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="Load NYC CitiBike Data"
+                  title="下載 NYC CitiBike 資料"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="下載所需資料" duration="0">
+        <h2 is-upgraded><strong>Download Data from citibike website.</strong></h2>
+<p><a href="https://ride.citibikenyc.com/system-data" target="_blank">https://ride.citibikenyc.com/system-data</a></p>
+<p class="image-container"><img style="width: 581.50px" src="img/a79bc18903d8a4d5.png"></p>
+<p>點進 <a href="https://s3.amazonaws.com/tripdata/index.html" target="_blank">downloadable files of Citi Bike trip data</a> ，下載所需資料。（from July 1, 2013, to May 31, 2018）</p>
+<p class="image-container"><img style="width: 513.50px" src="img/91cab954f51d4fdb.png"></p>
+<p>點選所需資料下載，下載後解壓縮並檢查資料。</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="檢查資料" duration="0">
+        <h2 is-upgraded><strong>使用終端機（Terminal）檢查資料 （for Mac）</strong></h2>
+<ul>
+<li>開啟終端機，點選 F4<img style="width: 20.00px" src="img/6515b66403ff24b3.png"> Spotlight 搜尋：終端機 或是 Terminal</li>
+</ul>
+<p class="image-container"><img style="width: 438.47px" src="img/b5c4293c1419ba17.png"></p>
+<p class="image-container"><img style="width: 442.15px" src="img/86bce3ac8dc0f137.png"></p>
+<ul>
+<li>輸入 <code>cd ~</code> 按enter</li>
+<li>輸入 <code>ls</code> 按enter</li>
+<li>輸入 <code>cd Downloads</code> 按enter</li>
+</ul>
+<p class="image-container"><img style="width: 414.35px" src="img/584a28a21473fedb.png"></p>
+<ul>
+<li>輸入 <code>ls -crtl</code> 按enter    </li>
+</ul>
+<p>會依照時間序排列顯示出在下載項目中的檔案</p>
+<p class="image-container"><img style="width: 414.48px" src="img/2cfd2ccabc48682a.png"></p>
+<ul>
+<li>輸入 <code>head [檔案名稱]</code>  按enter</li>
+</ul>
+<pre><code>head 201805-citibike-tripdata.csv</code></pre>
+<ul>
+<li>可看前十筆資料</li>
+<li>輸入檔名前幾個英文字母後可以按Tab鍵，會自動輸入完成</li>
+</ul>
+<p class="image-container"><img style="width: 601.70px" src="img/19c0f5bc3932011b.png"></p>
+<ul>
+<li>輸入 <code>wc -l [檔案名稱]</code>  按enter</li>
+</ul>
+<pre><code>wc -l 201805-citibike-tripdata.csv</code></pre>
+<ul>
+<li>可以看到資料列(row)的數量</li>
+<li>輸入檔名前幾個英文字母後可以按Tab鍵，會自動輸入完成</li>
+<li>下圖為檔案<code>201805-citibike-tripdata.csv</code>的結果，列數量為1824711</li>
+</ul>
+<p class="image-container"><img style="width: 601.70px" src="img/f0daabf58e520a30.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="進入Incorta" duration="0">
+        <h2 is-upgraded><strong>登入 Incorta</strong></h2>
+<p>輸入</p>
+<pre><code>Tenant : 
+Username : 
+Password : </code></pre>
+<p>點選 Sign In</p>
+<p class="image-container"><img style="width: 536.94px" src="img/d4c103736199322c.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="新增資料夾 Create Folder" duration="0">
+        <h2 is-upgraded>Create Folder</h2>
+<ul>
+<li>點進 <code>Data → Local Data Files → +New → Create Folder</code></li>
+</ul>
+<p class="image-container"><img style="width: 601.70px" src="img/4e9cb4f1591794e8.png"></p>
+<ul>
+<li>Name 輸入 NYC_CitiBike (不要有空格)</li>
+</ul>
+<p class="image-container"><img style="width: 601.70px" src="img/85f69c9f63915001.png"></p>
+<h2 is-upgraded><strong>Share</strong></h2>
+<aside class="special"><p><strong>TIP: </strong>每次新增資料夾時，都要分享</p>
+</aside>
+<ul>
+<li>點選右邊share圖標，搜尋ML Demo(Group)點選，按右上角眼睛圖標(Can View)改成 Can Edit，點選Share，最後再點Close</li>
+<li>步驟及完成圖如下：</li>
+</ul>
+<p class="image-container"><img style="width: 601.70px" src="img/84eff50ca6e85ea.png"></p>
+<p class="image-container"><img style="width: 377.95px" src="img/19ecee57a50eedc9.png"> </p>
+<p class="image-container"><img style="width: 377.95px" src="img/5536aa8e55d42212.png"> </p>
+<p class="image-container"><img style="width: 377.95px" src="img/5123c69b1c42309a.png"></p>
+<p class="image-container"><img style="width: 680.31px" src="img/d8ec7afadecb40a3.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Load Data" duration="0">
+        <ul>
+<li>點進剛剛建立的資料夾 NYC_CitiBike</li>
+<li>點 <code>+ New → Add Data Sourse → Upload Data File</code></li>
+<li>將<code>.zip</code> 的檔案載入進來</li>
+<li>可能需要等個幾秒鐘，就完成將資料載入Incorta了</li>
+</ul>
+<aside class="special"><p><strong>TIP: 注意是要載.zip檔，不是.csv檔</strong></p>
+</aside>
+<ul>
+<li>步驟及完成圖如下：</li>
+</ul>
+<p class="image-container"><img style="width: 601.70px" src="img/25825f35be77eb2f.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/3167cf7b63a725c2.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/fbc45ab1db4c3ac7.png"></p>
+<p class="image-container"><img style="width: 377.95px" src="img/aa887cc994ec7bcc.png"></p>
+<p class="image-container"><img style="width: 377.95px" src="img/dfe8ba2ff394e176.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/e4a1d6cb9f752150.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="建立Schema" duration="0">
+        <ul>
+<li>點進 <code>Schema → +New → Create Schema</code></li>
+<li>Name 輸入和剛剛 Folder 相同名稱：NYC_CitiBike，點Save</li>
+<li>回到Schema，點選剛剛所建立的schema的右側點進三個點，點選share，和上面share步驟相同，搜尋ML Demo(Group)點選，按右上角眼睛圖標(Can View)改成 Can Edit，點選Share，最後再點Close</li>
+</ul>
+<aside class="special"><p><strong>TIP: </strong>每次新增 schema 時，都要分享</p>
+</aside>
+<ul>
+<li>步驟及完成圖如下：</li>
+</ul>
+<p class="image-container"><img style="width: 601.70px" src="img/e0828fcce8a44f4d.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/1558e39308367b82.png"></p>
+<p class="image-container"><img style="width: 602.95px" src="img/b759839acaab512f.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/fa47e1b2fd2b1fcc.png"></p>
+<p class="image-container"><img style="width: 192.76px" src="img/b38dbfd6687ca4b.png"> <img style="width: 192.76px" src="img/24ae39df16747a28.png"> <img style="width: 192.76px" src="img/39430cbe6b9d051a.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="將 Data 載入Schema" duration="0">
+        <h2 is-upgraded><strong>建立 Table </strong></h2>
+<ul>
+<li>點進 <code>NYC_CitiBike → +New → Table</code></li>
+<li>Type 選 File System</li>
+<li>Data Sourse 選 LocalFiles</li>
+<li>Data Type 選 Text (csv, tsv, tab, txt)</li>
+<li>Union Files 打開</li>
+<li>Browse 選 NYC_CitiBike</li>
+<li>點 Add</li>
+<li>左上角 table name 輸入 tripdata</li>
+<li>看到如下圖四表示Table建立成功，點選右上角Done</li>
+<li>點右上角 Save Changes</li>
+</ul>
+<aside class="special"><p><strong>TIP: </strong>有做任何修改都要記得 Done → Save Changes</p>
+</aside>
+<h2 is-upgraded><strong>載入資料</strong></h2>
+<ul>
+<li>再點右上角 <code>Load → Full Load</code></li>
+</ul>
+<aside class="warning"><p><strong>Note:  </strong></p>
+<p>Full Load : 不管原本有什麼，載入所有資料，覆蓋先前資料，第一次 load 資料一率用 Full Load</p>
+<p>Incremental Load : 漸進式，保留原本有的，載入新的</p>
+<p>Staging Load : 將在Incorta內的資料重新 load</p>
+</aside>
+<ul>
+<li>Load 完成後，檢查Rows數量是否和前面用終端機看得相同</li>
+<li>ex : 終端機結果：檔案<code>201805-citibike-tripdata.csv</code>的結果，列數量為1824711，Rows數量是1824710，結果值差1是正確的，因為要扣掉第一列</li>
+<li>點進 tripdata 檢查 Column Name, Column Label, Column Type 是否有奇怪的地方</li>
+</ul>
+<p class="image-container"><img style="width: 601.70px" src="img/7925c3dacf2d7d41.png"></p>
+<p class="image-container"><img style="width: 283.46px" src="img/119f4365880d04e4.png"><img style="width: 283.86px" src="img/7d099c966dc974b4.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/b9d951f1197e4ec6.png"></p>
+<p># Table 建立成功點Done</p>
+<p class="image-container"><img style="width: 601.70px" src="img/71dbf596db893cf3.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/afe10444d07fdd88.png"></p>
+<p class="image-container"><img style="width: 603.58px" src="img/9f2922dadfb06b35.png"></p>
+<h2 is-upgraded><strong>繼續載入所有資料</strong></h2>
+<ul>
+<li>重複以上步驟（步驟4和步驟6），將所有資料載入Incorta Local Data Files，並且載入Schema</li>
+<li>注意後來載入Schema可用Incremental Load (漸進式載入），將新的資料載入</li>
+<li>最後記得檢查是否所有資料是否載入成功，可以點進Last Load Status 檢查是否有Rejected</li>
+<li>若是有Rejected 就需要做處理</li>
+</ul>
+<p class="image-container"><img style="width: 601.70px" src="img/1399d9c8e338b8c.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/41f9d8e069ff9c8e.png"><img style="width: 601.70px" src="img/5f832359b3ed9122.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/8eba6d56a1b92607.png"></p>
+<p>＃有Rejected，需要做處理</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

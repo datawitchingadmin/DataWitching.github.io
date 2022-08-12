@@ -1,0 +1,714 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>DateFunctions_TimestampFunctions</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="DateFunctions_TimestampFunctions"
+                  title="DateFunctions_TimestampFunctions"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>時間的型態有兩個，分別是Date 和 Timestamp，當資料的時間型態是這兩個時，可以運用一些函數對時間進行分析和計算。</p>
+<h3 is-upgraded>Example</h3>
+<p><code>Date : ‘ 2022-08-03 '</code></p>
+<p><code>Timestamp : ‘ 2022-08-03 14:32:40 '</code></p>
+<p>後面會介紹：</p>
+<table>
+<tr><td colspan="2" rowspan="1"><h2 is-upgraded><strong>Date Functions</strong></h2>
+</td><td colspan="1" rowspan="1"><h2 is-upgraded><strong>Timestamp Functions</strong></h2>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>current_date</p>
+</td><td colspan="1" rowspan="1"><p>year</p>
+</td><td colspan="1" rowspan="1"><p>current_timestamp</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>date_format</p>
+</td><td colspan="1" rowspan="1"><p>quarter</p>
+</td><td colspan="1" rowspan="1"><p>hour</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>to_date</p>
+</td><td colspan="1" rowspan="1"><p>month</p>
+</td><td colspan="1" rowspan="1"><p>minute</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>add_months</p>
+</td><td colspan="1" rowspan="1"><p>dayofweek</p>
+</td><td colspan="1" rowspan="1"><p>second</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>date_add</p>
+</td><td colspan="1" rowspan="1"><p>dayofmonth</p>
+</td><td colspan="1" rowspan="1"><p>to_timestamp</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>datediff</p>
+</td><td colspan="1" rowspan="1"><p>dayofyear</p>
+</td><td colspan="1" rowspan="1"></td></tr>
+<tr><td colspan="1" rowspan="1"><p>months_between</p>
+</td><td colspan="1" rowspan="1"><p>weekofyear</p>
+</td><td colspan="1" rowspan="1"></td></tr>
+<tr><td colspan="1" rowspan="1"><p>next_day</p>
+</td><td colspan="1" rowspan="1"><p>last_day</p>
+</td><td colspan="1" rowspan="1"></td></tr>
+<tr><td colspan="1" rowspan="1"><p>trunc</p>
+</td><td colspan="1" rowspan="1"><p>from_unixtime</p>
+</td><td colspan="1" rowspan="1"></td></tr>
+<tr><td colspan="1" rowspan="1"><p>date_trunc</p>
+</td><td colspan="1" rowspan="1"><p>unix_timestamp</p>
+</td><td colspan="1" rowspan="1"></td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Date Functions" duration="0">
+        <p>Date Functions 有：</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>current_date</p>
+</td><td colspan="1" rowspan="1"><p>next_day</p>
+</td><td colspan="1" rowspan="1"><p>dayofmonth</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>date_format</p>
+</td><td colspan="1" rowspan="1"><p>trunc</p>
+</td><td colspan="1" rowspan="1"><p>dayofyear</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>to_date</p>
+</td><td colspan="1" rowspan="1"><p>date_trunc</p>
+</td><td colspan="1" rowspan="1"><p>weekofyear</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>add_months</p>
+</td><td colspan="1" rowspan="1"><p>year</p>
+</td><td colspan="1" rowspan="1"><p>last_day</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>date_add</p>
+</td><td colspan="1" rowspan="1"><p>quarter</p>
+</td><td colspan="1" rowspan="1"><p>from_unixtime</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>datediff</p>
+</td><td colspan="1" rowspan="1"><p>month</p>
+</td><td colspan="1" rowspan="1"><p>unix_timestamp</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>months_between</p>
+</td><td colspan="1" rowspan="1"><p>dayofweek</p>
+</td><td colspan="1" rowspan="1"></td></tr>
+</table>
+<p>接下來會一一介紹～</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="current_date - 當日日期" duration="0">
+        <p><code>current_date()</code></p>
+<p>回傳當日日期</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT current_date();
+ 2022-08-04
+&gt; SELECT current_date;
+ 2022-08-04</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>將當天日期 current date 擺在資料的第一欄</p>
+<pre><code>%sql
+SELECT current_date, *
+FROM NYC_CitiBike.DATE_HANDLING
+LIMIT 100</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/d865758b82047f7f.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="date_format - 選取日期的年月日、時分秒" duration="0">
+        <p><code>date_format(timestamp, fmt) </code></p>
+<p>- Converts timestamp to a value of string in the format specified by the date format fmt.</p>
+<p>- 將 timestamp 資料依照特定的日期格式fmt，選取需要部分，轉換成 srting</p>
+<h2 is-upgraded>Arguments<strong>:</strong></h2>
+<ul>
+<li><code>timestamp</code> - A date/timestamp or string to be converted to the given format.</li>
+<li><code>fmt</code> - Date/time format pattern to follow. See <a href="https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html" target="_blank">Datetime Patterns</a> for valid date and time format patterns.</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT date_format(&#39;2016-04-08&#39;, &#39;y&#39;);
+ 2016</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>可以選取資料型態為 date 或 timestamp 的年月日、時分秒 等等</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, 
+date_format(starttime_as_timestamp, &#39;yyyy&#39;) year, 
+date_format(starttime_as_timestamp, &#39;MM&#39;) month, 
+date_format(starttime_as_timestamp, &#39;dd&#39;) day,
+date_format(starttime_as_timestamp, &#39;HH&#39;) hour,
+date_format(starttime_as_timestamp, &#39;mm&#39;) minute,
+date_format(starttime_as_timestamp, &#39;ss&#39;) second
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/a07b0d9e8b3c3d79.png"></p>
+<aside class="warning"><p><strong>NOTE :  </strong></p>
+<p>當 <code>fmt</code> 給的是 ‘y&#39; , ‘M&#39;, ‘d&#39; 單個字母時，會回傳的是最少位數的結果</p>
+<p>ex :  <code>date_format(2018-03-01) </code></p>
+<p> --&gt;    ‘y&#39; 回傳 2018、 &#39;Ｍ&#39; 回傳 3 、&#39;d&#39; 回傳 1</p>
+<p>當 <code>fmt</code> 給的是 ‘yyyy&#39; , ‘MM&#39;, ‘dd&#39; 多個字母時，回傳的結果會根據你給他幾個字母，他回傳幾位數，不夠的時候會補0</p>
+<p>ex :  <code>date_format(2018-03-01) </code></p>
+<p>--&gt;    ‘yyyy&#39; 回傳 2018、 &#39;MM&#39; 回傳 03 、&#39;dd&#39; 回傳 01</p>
+</aside>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>也可以將月份回傳成英文縮寫形式，或是英文全名</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, date_format(starttime_as_timestamp, &#39;MMM d&#39;) Month_Day
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/e84a2c670d58acda.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="to_date - 將字串轉換成日期" duration="0">
+        <p><code>to_date(date_str[, fmt])</code></p>
+<p>可以將 <code>string</code> 字串型態的日期資料改成 <code>date</code> 型態的資料</p>
+<aside class="special"><p><strong>TIP: </strong><code>fmt</code> 可以給，也可以不給</p>
+</aside>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT to_date(&#39;2009-07-30 04:17:52&#39;);
+ 2009-07-30
+&gt; SELECT to_date(&#39;2016-12-31&#39;, &#39;yyyy-MM-dd&#39;);
+ 2016-12-31</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>可以將 table 內資料型態為 <code>string</code> 的資料，轉換成 <code>date</code> 型態的資料，並儲存成一個新的欄位</p>
+<pre><code>%sql
+SELECT starttime, to_date(starttime) date_formats
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/a4089aaa2199f1b1.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="add_months - 計算n個月後的日期" duration="0">
+        <p><code>add_months(start_date, num_months)</code> </p>
+<p>- Returns the date that is num_months after start_date.</p>
+<p>可以加月份，回傳所指定的月數後的日期，回傳在<code>start_date</code> <code>num_months</code>月後的日期</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>資料是2016-08-31，想知道1個月後的日期，可以用以下程式碼，得2016-09-30</p>
+<pre><code>&gt; SELECT add_months(&#39;2016-08-31&#39;, 1);
+ 2016-09-30</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>以原來的日期加上一個月，新增成新的一欄</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, add_months(starttime_as_timestamp, 1) 1_month_after_starttime
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/7cf82ee489ce4a82.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="date_add - 計算n天後的日期" duration="0">
+        <p><code>date_add(start_date, num_days) </code></p>
+<p>- Returns the date that is <code>num_days</code> after <code>start_date</code>.</p>
+<p>可以加日期，回傳所指定天數後的日期，回傳在<code>start_date num_days</code>天後的日期</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>資料是2016-07-30，想知道1天後的日期，可以用以下程式碼，得2016-07-31</p>
+<pre><code>&gt; SELECT date_add(&#39;2016-07-30&#39;, 1);
+ 2016-07-31</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>以原來的日期加上一天，新增成新的一欄</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, date_add(starttime_as_timestamp, 1) 1_day_after_starttime
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/50329c36b206f456.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="datediff - 計算兩個日期之間的天數" duration="0">
+        <p><code>datediff(endDate, startDate) </code></p>
+<p>- Returns the number of days from <code>startDate</code> to <code>endDate</code>.</p>
+<p>計算兩個日期之間的天數</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT datediff(&#39;2009-07-31&#39;, &#39;2009-07-30&#39;);
+ 1
+
+&gt; SELECT datediff(&#39;2009-07-30&#39;, &#39;2009-07-31&#39;);
+ -1</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 datediff 函數計算 trip 開始到結束的天數，可得知車被借了多少天</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, stoptime_as_timestamp, datediff(stoptime_as_timestamp, starttime_as_timestamp) duration
+FROM NYC_CitiBike.DATE_HANDLING
+ORDER BY duration DESC </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/905e176900f8ff1.png"></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>計算每站最大（最近期）和最小（最久遠）被使用的時間差，可以得知車站到目前為止被使用了多少天</p>
+<pre><code>%sql
+SELECT start_station_id, start_station_name, max(starttime_as_timestamp) latest_day,
+        min(starttime_as_timestamp) start_day, datediff(max(starttime_as_timestamp), min(starttime_as_timestamp)) duration_day
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY start_station_id, start_station_name</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/aa398c177508f564.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="months_between - 計算兩個日期之間的月數" duration="0">
+        <p><code>months_between(timestamp1, timestamp2[, roundOff])</code></p>
+<p> - If <code>timestamp1</code> is later than <code>timestamp2</code>, then the result is positive. If <code>timestamp1</code> and <code>timestamp2</code> are on the same day of month, or both are the last day of month, time of day will be ignored. Otherwise, the difference is calculated based on 31 days per month, and rounded to 8 digits unless roundOff=false.</p>
+<p>計算兩個時間之間差距的月份</p>
+<ul>
+<li>如果 <code>timestamp1</code> 比 <code>timestamp2</code> 晚的話，結果會是正數，反之，則是負數</li>
+<li>如果 <code>timestamp1</code> 和 <code>timestamp2</code> 日期是同一天，或是兩個都是當月的最後一天的話，當天的時間會被忽略不計，否則，會以31天一個月計算到小數點第8位。</li>
+<li>如果有加上 roundOff=false ，則不會四捨五入</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT months_between(&#39;1997-02-28 10:30:00&#39;, &#39;1996-10-30&#39;);
+ 3.94959677
+&gt; SELECT months_between(&#39;1997-02-28 10:30:00&#39;, &#39;1996-10-30&#39;, false);
+ 3.9495967741935485</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>計算每站最大（最近期）和最小（最久遠）被使用的時間差，可以得知車站到目前為止被使用了多少個月</p>
+<pre><code>%sql
+SELECT start_station_id, start_station_name, months_between(max(starttime_as_timestamp), min(starttime_as_timestamp)) duration_month
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY start_station_id, start_station_name</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/639ac058460d145e.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="next_day - 找下一個星期ｘ" duration="0">
+        <p><code>next_day(start_date, day_of_week)</code></p>
+<p>找到指定日期 <code>start_date</code> 的下一個 <code>day_of_week</code> 星期一、二、三、四、...</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>找到 <code>2015-01-14</code> 的下一個星期四 <code>'TU'</code></p>
+<pre><code>&gt; SELECT next_day(&#39;2015-01-14&#39;, &#39;TU&#39;);
+ 2015-01-20</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>找到每個時間點的下一個星期一<code>'MON'</code></p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, next_day(starttime_as_timestamp, &#39;MON&#39;) next_monday
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/824d5f4301dd392a.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="trunc - 找出相對應的年、季、月、週" duration="0">
+        <p><code>trunc(date, fmt)</code></p>
+<p> - Returns <code>date</code> with the time portion of the day truncated to the unit specified by the format model <code>fmt</code>.</p>
+<p>回傳 <code>date</code> 在 <code>fmt</code> 區間裡面最早的那個日期</p>
+<h2 is-upgraded><strong>Arguments:</strong></h2>
+<ul>
+<li><code>date</code> - date value or valid date string</li>
+<li><code>fmt</code> - the format representing the unit to be truncated to</li>
+<li>&#34;YEAR&#34;, &#34;YYYY&#34;, &#34;YY&#34; - truncate to the first date of the year that the <code>date</code> falls in</li>
+<li>&#34;QUARTER&#34; - truncate to the first date of the quarter that the <code>date</code> falls in</li>
+<li>&#34;MONTH&#34;, &#34;MM&#34;, &#34;MON&#34; - truncate to the first date of the month that the <code>date</code> falls in</li>
+<li>&#34;WEEK&#34; - truncate to the Monday of the week that the <code>date</code> falls in</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>2019-08-04 在 week 區間裡面最早的那個日期是 2019-07-29</p>
+<p>→ 換句話說，2019-08-04 是在以 2019-07-29 為首的一週內</p>
+<p>2019-08-04 在 quarter 區間裡面最早的那個日期是 2019-07-01</p>
+<p>→ 換句話說，2019-08-04 是在以 2019-07-01 為首的一季內</p>
+<p>2009-02-12 在 month 區間裡面最早的那個日期是 2019-02-01</p>
+<p>→ 換句話說，2009-02-12 是在以 2019-02-01 為首的一週內</p>
+<p>2015-10-27 在 year 區間裡面最早的那個日期是 2015-01-01</p>
+<p>→ 換句話說，2015-10-27 是在以 2015-01-01 為首的一週內</p>
+<pre><code>&gt; SELECT trunc(&#39;2019-08-04&#39;, &#39;week&#39;);
+ 2019-07-29
+&gt; SELECT trunc(&#39;2019-08-04&#39;, &#39;quarter&#39;);
+ 2019-07-01
+&gt; SELECT trunc(&#39;2009-02-12&#39;, &#39;MM&#39;);
+ 2009-02-01
+&gt; SELECT trunc(&#39;2015-10-27&#39;, &#39;YEAR&#39;);
+ 2015-01-01</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>找出 starttime 日期相對應的一週</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, trunc(starttime_as_timestamp, &#39;week&#39;) year_month_week
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/6a1270e84c34b5b6.png"></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>可以利用 <code>trunc</code> 函數找出相對應的週，在計算車輛被使用的次數 (counts of trips)，畫出每週對於使用次數趨勢</p>
+<pre><code>%sql
+SELECT trunc(starttime_as_timestamp, &#39;week&#39;) year_month_week, COUNT(*) counts_of_trips
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY year_month_week
+ORDER BY year_month_week</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/f592907a18e67221.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="date_trunc - 找出相對應的年、季、月、週、日、時、分、秒、..." duration="0">
+        <p><code>date_trunc(fmt, ts)</code></p>
+<p> - Returns timestamp <code>ts</code> truncated to the unit specified by the format model <code>fmt</code>.</p>
+<p>回傳 <code>ts</code> 在 <code>fmt</code> 區間裡面最早的那個日期或是時間</p>
+<h2 is-upgraded><strong>Arguments:</strong></h2>
+<ul>
+<li><code>fmt</code> - the format representing the unit to be truncated to</li>
+<li>&#34;YEAR&#34;, &#34;YYYY&#34;, &#34;YY&#34; - truncate to the first date of the year that the <code>ts</code> falls in, the time part will be zero out</li>
+<li>&#34;QUARTER&#34; - truncate to the first date of the quarter that the <code>ts</code> falls in, the time part will be zero out</li>
+<li>&#34;MONTH&#34;, &#34;MM&#34;, &#34;MON&#34; - truncate to the first date of the month that the <code>ts</code> falls in, the time part will be zero out</li>
+<li>&#34;WEEK&#34; - truncate to the Monday of the week that the <code>ts</code> falls in, the time part will be zero out</li>
+<li>&#34;DAY&#34;, &#34;DD&#34; - zero out the time part</li>
+<li>&#34;HOUR&#34; - zero out the minute and second with fraction part</li>
+<li>&#34;MINUTE&#34;- zero out the second with fraction part</li>
+<li>&#34;SECOND&#34; - zero out the second fraction part</li>
+<li>&#34;MILLISECOND&#34; - zero out the microseconds</li>
+<li>&#34;MICROSECOND&#34; - everything remains</li>
+<li><code>ts</code> - datetime value or valid timestamp string</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT date_trunc(&#39;YEAR&#39;, &#39;2015-03-05T09:32:05.359&#39;);
+ 2015-01-01 00:00:00
+&gt; SELECT date_trunc(&#39;MM&#39;, &#39;2015-03-05T09:32:05.359&#39;);
+ 2015-03-01 00:00:00
+&gt; SELECT date_trunc(&#39;DD&#39;, &#39;2015-03-05T09:32:05.359&#39;);
+ 2015-03-05 00:00:00
+&gt; SELECT date_trunc(&#39;HOUR&#39;, &#39;2015-03-05T09:32:05.359&#39;);
+ 2015-03-05 09:00:00
+&gt; SELECT date_trunc(&#39;MILLISECOND&#39;, &#39;2015-03-05T09:32:05.123456&#39;);
+ 2015-03-05 09:32:05.123</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>找出 starttime 相對應的小時</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, date_trunc(&#39;hour&#39;, starttime_as_timestamp) hour_of_day
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/ad22d3b0a572d2b2.png"></p>
+<aside class="special"><p><strong>TIP:</strong>  trunc 和 date_trunc 的區別</p>
+<p>trunc：找出相對應的年、季、月、週</p>
+<p>date_trunc：找出相對應的年、季、月、週、日、時、分、秒、... 甚至比秒更小的單位</p>
+<p>trunc 的 format 是<code>trunc(date, fmt)</code>，先日期再格式</p>
+<p>date_trunc 的 format 是<code>date_trunc(fmt, ts)</code>，先格式再日期</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="year - 年" duration="0">
+        <p><code>year(date)</code></p>
+<p> - Returns the year component of the date/timestamp.</p>
+<p>回傳指定日期的年份</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT year(&#39;2016-07-30&#39;);
+ 2016</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 year 函數，找出starttime的年份</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, year(starttime_as_timestamp) year
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/193c3ee503df7e88.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="quarter - 季" duration="0">
+        <p><code>quarter(date)</code></p>
+<p> - Returns the quarter of the year for date, in the range 1 to 4.</p>
+<p>回傳指定日期的季：1-4</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT quarter(&#39;2016-08-31&#39;);
+ 3</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 quarter 函數，找出starttime的季次</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, quarter(starttime_as_timestamp) quarter
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/30abcaaa1f02fbd5.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="month - 月" duration="0">
+        <p><code>month(date)</code></p>
+<p> - Returns the month component of the date/timestamp.</p>
+<p>回傳指定日期的月份</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT month(&#39;2016-07-30&#39;);
+ 7</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 month 函數，找出starttime的月份</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, month(starttime_as_timestamp) month
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/760140829fce63ea.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="dayofweek - 星期" duration="0">
+        <p><code>dayofweek(date)</code></p>
+<p> - Returns the day of the week for date/timestamp (1 = Sunday, 2 = Monday, ..., 7 = Saturday).</p>
+<p>回傳指定日期的星期，1 = 星期日，2 = 星期一，3 = 星期二，4 = 星期三，...，7 = 星期六</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT dayofweek(&#39;2009-07-30&#39;);
+ 5</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 dayofweek 函數，找出starttime的星期</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, dayofweek(starttime_as_timestamp) day_of_week
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/20aeb2ba4d47cd0c.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="dayofmonth - 一個月當中的日" duration="0">
+        <p><code>dayofmonth(date)</code></p>
+<p> - Returns the day of month of the date/timestamp.</p>
+<p>回傳指定日期的在一個月當中的日</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT dayofmonth(&#39;2009-07-30&#39;);
+ 30</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 dayofmonth 函數，找出starttime的一個月當中的日</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, dayofmonth(starttime_as_timestamp) day_of_month
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/5fbd064547414d66.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="dayofyear - 一年當中的日" duration="0">
+        <p><code>dayofyear(date)</code></p>
+<p> - Returns the day of year of the date/timestamp.</p>
+<p>回傳指定日期的在一年當中的日</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT dayofyear(&#39;2016-04-09&#39;);
+ 100</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 dayofyear 函數，找出starttime的一年當中的日</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, dayofyear(starttime_as_timestamp) day_of_year
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/cc836b317731fc5b.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="weekofyear - 一年中的週次" duration="0">
+        <p><code>weekofyear(date)</code></p>
+<p> - Returns the week of the year of the given date. </p>
+<p> - A week is considered to start on a Monday and week 1 is the first week with &gt;3 days.</p>
+<p>回傳指定日期的在一年中的週次</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT weekofyear(&#39;2008-02-20&#39;);
+ 8</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 weekofyear 函數，找出starttime的一年當中的週次</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, weekofyear(starttime_as_timestamp) week_of_year
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/92d6c7f23d573ac0.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="last_day - 所在月份中的最後一天" duration="0">
+        <p><code>last_day(date)</code></p>
+<p> - Returns the last day of the month which the date belongs to.</p>
+<p>回傳指定日期 <code>date</code> 所在月份中的最後一天</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT last_day(&#39;2009-01-12&#39;);
+ 2009-01-31</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%sql
+SELECT starttime_as_timestamp, last_day(starttime_as_timestamp) last_day_of_month
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/d54337e8f6bc2c5e.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="from_unixtime - 將 unix time 轉換成 timestamp" duration="0">
+        <p><code>from_unixtime(unix_time[, fmt])</code></p>
+<p> - Returns <code>unix_time</code> in the specified <code>fmt</code>.</p>
+<p>此函數會根據 unix time 回傳所提供之格式 <code>fmt</code></p>
+<h2 is-upgraded><strong>Arguments</strong></h2>
+<ul>
+<li><code>unix_time</code> - UNIX Timestamp to be converted to the provided format.</li>
+<li><code>fmt</code> - Date/time format pattern to follow. See <a href="https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html" target="_blank">Datetime Patterns</a> for valid date and time format patterns. The &#39;yyyy-MM-dd HH:mm:ss&#39; pattern is used if omitted.</li>
+</ul>
+<aside class="warning"><p><strong>NOTE :  </strong></p>
+<p>UNIX時間，或稱POSIX時間，是一種時間的表達方式，是UNIX或類UNIX系統使用的時間表示方式：從<strong>UTC1970年1月1日0時0分0秒</strong>起至現在的總秒數，不考慮閏秒。 </p>
+</aside>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT from_unixtime(0, &#39;yyyy-MM-dd HH:mm:ss&#39;);
+ 1969-12-31 16:00:00
+
+&gt; SELECT from_unixtime(0);
+ 1969-12-31 16:00:00</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="unix_timestamp - 將 timestamp 轉換成 unix time" duration="0">
+        <p><code>unix_timestamp([timeExp[, fmt]])</code></p>
+<p> - Returns the UNIX timestamp of current or specified time.</p>
+<p>此函數會根據時間或所提供之格式 <code>fmt</code> 回傳 unix time </p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT unix_timestamp();
+ 1476884637
+&gt; SELECT unix_timestamp(&#39;2016-04-08&#39;, &#39;yyyy-MM-dd&#39;);
+ 1460041200</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 unix_timestamp 函數，將 timestamp 形式的 starttime 轉換成 unix time 形式</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, unix_timestamp(starttime_as_timestamp) unix 
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/6ea34f16abf87d30.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Timestamp Functions" duration="0">
+        <p>Timestamo Functions 有：</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>current_timestamp</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>hour</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>minute</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>second</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>to_timestamp</p>
+</td></tr>
+</table>
+<p>接下來會一一介紹～</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="current_timestamp - 回傳現在時刻" duration="0">
+        <p><code>current_timestamp()</code></p>
+<p><code>current_timestamp</code></p>
+<p> - Returns the current timestamp at the start of query evaluation. All calls of current_timestamp within the same query return the same value.</p>
+<p>此函數會回傳現在當下的時刻，包括：年月日、時分秒、毫秒</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT current_timestamp();
+ 2020-04-25 15:49:11.914
+&gt; SELECT current_timestamp;
+ 2020-04-25 15:49:11.914</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 current_timestamp 函數，新增一欄現在時刻</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, current_timestamp() current_time 
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/c888beec47692bdf.png"></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 current_timestamp 函數，回傳現在時刻，再利用 datediff 函數計算每個車站最早有被使用的時間到現在，總共經歷了幾天，以 start station 分類</p>
+<pre><code>%sql
+SELECT start_station_id, start_station_name, 
+       min(starttime_as_timestamp) start_time, 
+       current_timestamp() current_time, 
+       datediff(current_timestamp(), 
+       min(starttime_as_timestamp)) open_duration_day
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY 1,2</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/50303d16293d5d01.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="hour - 時" duration="0">
+        <p><code>hour(timestamp)</code></p>
+<p> - Returns the hour component of the string/timestamp.</p>
+<p>回傳指定時間的小時</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT hour(&#39;2009-07-30 12:58:59&#39;);
+ 12</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 hour 函數，找出starttime的在一天當中的小時</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, hour(starttime_as_timestamp) Hour 
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/8c2bf9b63bc3918c.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="minute - 分" duration="0">
+        <p><code>minute(timestamp)</code></p>
+<p> - Returns the minute component of the string/timestamp.</p>
+<p>回傳指定時間的分鐘</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT minute(&#39;2009-07-30 12:58:59&#39;);
+ 58</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 minute 函數，找出starttime的分鐘</p>
+<pre><code>%sql
+SELECT starttime_as_timestamp, minute(starttime_as_timestamp) Minute 
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/fc7e0a3e53fadf85.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="second - 秒" duration="0">
+        <p><code>second(timestamp)</code></p>
+<p> - Returns the second component of the string/timestamp.</p>
+<p>回傳指定時間的秒數</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 second 函數，找出starttime的秒數</p>
+<pre><code>&gt; SELECT second(&#39;2009-07-30 12:58:59&#39;);
+ 59</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%sql
+SELECT starttime_as_timestamp, second(starttime_as_timestamp) Second 
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/79277e4d648b82e9.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="to_timestamp - 將字串轉換成timestamp" duration="0">
+        <p><code>to_timestamp(timestamp_str[, fmt])</code></p>
+<p> - Parses the <code>timestamp_str</code> expression with the <code>fmt</code> expression to a timestamp. Returns null with invalid input. By default, it follows casting rules to a timestamp if the <code>fmt</code> is omitted. The result data type is consistent with the value of configuration <code>spark.sql.timestampType</code>.</p>
+<p>將符合格式的字串轉換成 timestamp ，也可以給特定格式，將他轉換成 timestamp</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT to_timestamp(&#39;2016-12-31 00:12:00&#39;);
+ 2016-12-31 00:12:00
+&gt; SELECT to_timestamp(&#39;2016-12-31&#39;, &#39;yyyy-MM-dd&#39;);
+ 2016-12-31 00:00:00</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%sql
+SELECT CASE WHEN translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;##/##/#### ##:##:##&#39;
+            THEN to_timestamp(starttime, &#39;MM/dd/yyyy HH:mm:ss&#39;)
+            END as starttime_as_timestamp, starttime
+FROM NYC_CitiBike.tripdata
+WHERE translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;##/##/#### ##:##:##&#39;</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/dd8c67fdcb3289cf.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Reference" duration="0">
+        <p><a href="https://spark.apache.org/docs/latest/api/sql/search.html?q=date" target="_blank">https://spark.apache.org/docs/latest/api/sql/search.html?q=date</a></p>
+<p><a href="https://sparkbyexamples.com/spark/spark-sql-date-and-time-functions/" target="_blank">https://sparkbyexamples.com/spark/spark-sql-date-and-time-functions/</a></p>
+<p><a href="https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html" target="_blank">https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html</a></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

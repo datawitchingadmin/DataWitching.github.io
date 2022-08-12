@@ -1,0 +1,37 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-08-01T05:00:03Z",
+  "id": "Basic SQL",
+  "duration": 0,
+  "title": "Basic SQL",
+  "summary": "In this codelab, you'll learn some basic SQL.",
+  "source": "1aQhue4kXevEHR1-YzcdY82W3IHxGY-cxKlYYWm-p9mM",
+  "theme": "web",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "web"
+  ],
+  "tags": [
+    "cds17",
+    "chrome-dev-summit-2016",
+    "devfest18",
+    "gdd17",
+    "io2016",
+    "io2017",
+    "io2018",
+    "io2019",
+    "jsconfeu",
+    "kiosk",
+    "pwa-dev-summit",
+    "pwa-roadshow",
+    "tag-web",
+    "typtwd17",
+    "web"
+  ],
+  "url": "Basic SQL"
+}

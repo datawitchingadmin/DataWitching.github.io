@@ -1,0 +1,205 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Basic SQL</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="Basic SQL"
+                  title="Basic SQL"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>這篇 codelab 想藉由 NYC Citibike 資料，介紹簡單好入門的 SQL 運算，因此需要使用到 NYC Citibike 資料，可以先進入 NYC Citibike 網站下載資料。</p>
+<p>NYC Citibike 網站：</p>
+<p><a href="https://ride.citibikenyc.com/system-data" target="_blank">https://ride.citibikenyc.com/system-data</a></p>
+<p>以下會介紹：</p>
+<h2 is-upgraded><strong>SELECT FROM</strong></h2>
+<h2 is-upgraded><strong>LIMIT</strong></h2>
+<h2 is-upgraded><strong>DESC</strong></h2>
+<h2 is-upgraded><strong>ORDER BY</strong></h2>
+<h2 is-upgraded><strong>WHERE ... IS NOT NULL</strong></h2>
+<h2 is-upgraded><strong>DISTINCT </strong></h2>
+<h2 is-upgraded><strong>COUNT</strong></h2>
+<h2 is-upgraded><strong>GROUP BY</strong></h2>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="開啟 Incorta Notebook" duration="0">
+        <p>Schema →  +New →  Material View →  Choose Language →  Edit in Notebook</p>
+<p class="image-container"><img style="width: 601.70px" src="img/935b6c3ec7f0144d.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/e4cb505d2da8c7d7.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/89348b90ad7010e8.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="瀏覽所有資料 - *" duration="0">
+        <p><code>SELECT * FROM [table name]</code></p>
+<p>* 代表所有資料</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT * FROM NYC_CitiBike.tripdata </code></pre>
+<aside class="special"><p><strong>TIP: </strong>快捷鍵：shift + Enter →  Run Paragraph</p>
+</aside>
+<p class="image-container"><img style="width: 601.70px" src="img/4b96f0764ab8f3ad.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/15c1ce733d5ee226.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="僅查看n筆資料 - LIMIT" duration="0">
+        <p><code>LIMIT n</code></p>
+<p>僅查看 n 筆資料，可以減少系統的運算時間</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT * FROM NYC_CitiBike.tripdata LIMIT 10 </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/233cc1f74c372317.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="看table的structure - DESC" duration="0">
+        <p><code>DESC [table name]</code></p>
+<p>查看 column name 或是 data type，藉由查看資料結構，可以大概了解資料型態，並且對於後續分析也有些幫助。</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>DESC NYC_CitiBike.tripdata</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/1b595aff5be062f2.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="篩選column - SELECT" duration="0">
+        <p><code>SELECT column1, column2 FROM [table name]</code></p>
+<p>選用 [欄位column] - 學理上叫 projection，刪掉一些不需要的column，排列不同的次序，僅留下需要的欄位</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT start_station_name, end_station_name 
+FROM NYC_CitiBike.tripdata</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/b78cebefed44a2f1.png"></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT starttime, stoptime, tripduration
+FROM NYC_CitiBike.tripdata</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/d324a45c36256867.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="按照順序排列 - ORDER BY" duration="0">
+        <p><code>order by [DESC/ ASC]</code></p>
+<aside class="warning"><p><strong>NOTE :  </strong></p>
+<p>DESC 由大排到小</p>
+<p>ASC 由小排到大</p>
+<p>若是都不寫，預設則是ASC</p>
+</aside>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT starttime, stoptime 
+FROM NYC_CitiBike.tripdata 
+order by 1, 2</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/69cea178f8952afb.png"></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT DISTINCT start_station_name, end_station_name, COUNT(*) 
+FROM NYC_CitiBike.tripdata 
+where start_station_name is not null
+GROUP BY start_station_name, end_station_name
+ORDER BY COUNT(*) DESC</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/60287e6e7176de80.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="去除null - WHERE" duration="0">
+        <p><code>WHERE [column name] IS NOT NULL</code></p>
+<p>去除資料的空值，將缺少的資料去除以利計算</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT start_station_name, end_station_name 
+FROM NYC_CitiBike.tripdata 
+where start_station_name is not null
+ORDER 1,2</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/75a78f575c68ef5d.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="去除重複的資料 - DISTINCT" duration="0">
+        <p><code>DISTINCT</code> </p>
+<p>重複出現的數值或資料，讓他僅出現一次</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT DISTINCT start_station_name, end_station_name 
+FROM NYC_CitiBike.tripdata 
+where start_station_name is not null
+ORDER BY 1,2</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/743b922ef249dbcb.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="計算次數 - COUNT()" duration="0">
+        <p><code>COUNT( )</code></p>
+<p>可以利用 COUNT( ) 計算次數，算出所需資料的筆數，搭配 DISTINCT 還可以計算有多少不同的分類或是種類等等</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT COUNT(*) FROM NYC_CitiBike.tripdata</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/6df4d5cfb89e7b0d.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="分類 - GROUP BY" duration="0">
+        <p><code>GROUP BY</code></p>
+<p>當有任何 <code>aggregation column</code> 時，必須要用 <code>GROUP BY</code> ，除了<code>aggregation column</code> 其他 column 都要放進 <code>GROUP BY</code></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT DISTINCT start_station_name, end_station_name, COUNT(*) 
+FROM NYC_CitiBike.tripdata 
+where start_station_name is not null
+GROUP BY start_station_name, end_station_name</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/dfaad89c0482b1a0.png"></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>SELECT DISTINCT start_station_name, end_station_name, COUNT(*) 
+FROM NYC_CitiBike.tripdata 
+where start_station_name is not null
+GROUP BY start_station_name, end_station_name
+ORDER BY COUNT(*) DESC</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/60287e6e7176de80.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="SQL Statement 有一定的次序" duration="0">
+        <h2 is-upgraded><strong>SELECT...</strong></h2>
+<h2 is-upgraded><strong>FROM...</strong></h2>
+<h2 is-upgraded><strong>WHERE...</strong></h2>
+<h2 is-upgraded><strong>GROUP BY... </strong></h2>
+<h2 is-upgraded><strong>HAVING...</strong></h2>
+<h2 is-upgraded><strong>ORDER BY...</strong></h2>
+<aside class="warning"><p><strong>NOTE :  </strong>次序不能改變！</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

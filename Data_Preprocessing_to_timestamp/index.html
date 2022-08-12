@@ -1,0 +1,171 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>資料預處理 - to_timestamp</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="data preprocessing - to_timestamp"
+                  title="資料預處理 - to_timestamp"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="問題說明" duration="0">
+        <p>資料常常有缺失或不一致的情形</p>
+<p>這個是用NYC Citibike的資料來作為案例</p>
+<p>大致上分為兩個步驟</p>
+<ol type="1" start="1">
+<li>檢查資料</li>
+<li>處理資料</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>在分析資料之前必須要確認每個資料的 Column Type，要是正確的 Column Type ，之後的分析計算算才能順利成功。</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>Start_Station_Name 要是 String</p>
+<p>Start_Station_ID 要是 Integer</p>
+<p>Start_Time 要是 Timestamp</p>
+<p class="image-container"><img style="width: 601.70px" src="img/c4c0bf837dcccaee.png"></p>
+<p>若是 load data 時出現問題，或是 extarction 出現 rejected ，這時候很有可能是 column type 出現問題，這個 codelab 就是想要解決，當時間型態出現問題時，該如何解決</p>
+<p class="image-container"><img style="width: 601.70px" src="img/8eba6d56a1b92607.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="檢查時間的資料型態" duration="0">
+        <p>先將 incorta table 內需要修改的 column type 轉換成 string ，再做後續處理</p>
+<p class="image-container"><img style="width: 601.70px" src="img/58fbd683156a185b.png"></p>
+<p>開一個新的 Materialized View ，利用 translate，將數字轉換成##，可以查看 starttime 的顯示型態，可以發現有 ####-##-## ##:##:##,  ##/##/#### ##:##:##, ...等不同的形式</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%sql
+SELECT translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) , COUNT(*)
+FROM NYC_CitiBike.tripdata
+GROUP BY 1</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/90a9dc03e78e39e1.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="將 string 轉換成 timestamp" duration="0">
+        <ol type="1" start="1">
+<li>用 <code>to_timestamp</code> 將 string 轉換成 timestamp </li>
+</ol>
+<p><code>ex : to_timestamp(starttime, 'yyyy-MM-dd HH:mm:ss')</code></p>
+<p>利用 CASE WHEN ＋ WHERE 檢查各種形式轉換後的樣子，是否有轉換成功 </p>
+<p><a href="https://spark.apache.org/docs/2.4.7/api/sql/#to_timestamp" target="_blank">to_timestamp</a></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%sql
+ SELECT 
+        CASE 
+            WHEN   translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;####-##-## ##:##:##&#39;
+            THEN to_timestamp(starttime, &#39;yyyy-MM-dd HH:mm:ss&#39;)
+            END as starttime_as_timestamp, starttime
+FROM NYC_CitiBike.tripdata
+WHERE translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;####-##-## ##:##:##&#39;</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/914d7076dad32c92.png"></p>
+<ol type="1" start="2">
+<li>可以用 <code>WHERE</code> 確認 年-月-日 時：分：秒, 月/日/年 時：分：秒, ...等 分別的位置，再回到上一步驟，將 &#39;yyyy-MM-dd HH:mm:ss&#39; 填寫正確</li>
+</ol>
+<p>可參考此連結：<a href="https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html" target="_blank">https://spark.apache.org/docs/latest/sql-ref-datetime-pattern.html</a></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%sql
+SELECT starttime 
+FROM NYC_CitiBike.tripdata
+WHERE translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;##/##/#### ##:##:##&#39;</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/27e8ccf2d9b3d3d1.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="轉換所有的時間" duration="0">
+        <p>將所有可能試過一遍之後，把 code 貼到另一個新的 paragraph ，記得starttime和stoptime都要轉換：</p>
+<pre><code>%sql
+SELECT *,
+        CASE 
+            WHEN  translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;##/##/#### ##:##:##&#39;
+            THEN to_timestamp(starttime, &#39;MM/dd/yyyy HH:mm:ss&#39;)
+            WHEN   translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;####-##-## ##:##:##&#39;
+            THEN to_timestamp(starttime, &#39;yyyy-MM-dd HH:mm:ss&#39;)
+            WHEN  translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;#/#/#### #:##&#39;
+            THEN to_timestamp(starttime, &#39;M/d/yyyy H:mm&#39;) 
+            WHEN   translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;#/##/#### ##:##:##&#39;
+            THEN to_timestamp(starttime, &#39;M/dd/yyyy HH:mm:ss&#39;)
+            WHEN  translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;##/#/#### ##:##:##&#39;
+            THEN to_timestamp(starttime, &#39;MM/d/yyyy HH:mm:ss&#39;)
+            WHEN   translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;####-##-## ##:##:##.####&#39;
+            THEN to_timestamp(starttime, &#39;yyyy-MM-dd HH:mm:ss.SSSS&#39;)
+            WHEN  translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;#/##/#### #:##&#39;
+            THEN to_timestamp(starttime, &#39;M/dd/yyyy H:mm&#39;) 
+            WHEN   translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;#/#/#### ##:##:##&#39;
+            THEN to_timestamp(starttime, &#39;M/d/yyyy HH:mm:ss&#39;)
+            WHEN  translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;#/#/#### ##:##&#39;
+            THEN to_timestamp(starttime, &#39;M/d/yyyy HH:mm&#39;) 
+            WHEN  translate(starttime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;#/##/#### ##:##&#39;
+            THEN to_timestamp(starttime, &#39;M/dd/yyyy HH:mm&#39;) 
+            END AS starttime_as_timestamp,
+        CASE
+            WHEN  translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;##/##/#### ##:##:##&#39;
+            THEN to_timestamp(stoptime, &#39;MM/dd/yyyy HH:mm:ss&#39;)
+            WHEN   translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;####-##-## ##:##:##&#39;
+            THEN to_timestamp(stoptime, &#39;yyyy-MM-dd HH:mm:ss&#39;)
+            WHEN  translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;#/#/#### #:##&#39;
+            THEN to_timestamp(stoptime, &#39;M/d/yyyy H:mm&#39;) 
+            WHEN   translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;#/##/#### ##:##:##&#39;
+            THEN to_timestamp(stoptime, &#39;M/dd/yyyy HH:mm:ss&#39;)
+            WHEN  translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;##/#/#### ##:##:##&#39;
+            THEN to_timestamp(stoptime, &#39;MM/d/yyyy HH:mm:ss&#39;)
+            WHEN   translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;####-##-## ##:##:##.####&#39;
+            THEN to_timestamp(stoptime, &#39;yyyy-MM-dd HH:mm:ss.SSSS&#39;)
+            WHEN  translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;#/##/#### #:##&#39;
+            THEN to_timestamp(stoptime, &#39;M/dd/yyyy H:mm&#39;) 
+            WHEN   translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) = &#39;#/#/#### ##:##:##&#39;
+            THEN to_timestamp(stoptime, &#39;M/d/yyyy HH:mm:ss&#39;)
+            WHEN  translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;#/#/#### ##:##&#39;
+            THEN to_timestamp(stoptime, &#39;M/d/yyyy HH:mm&#39;) 
+            WHEN  translate(stoptime, &#39;1234567890&#39;,&#39;##########&#39;) =&#39;#/##/#### ##:##&#39;
+            THEN to_timestamp(stoptime, &#39;M/dd/yyyy HH:mm&#39;) 
+            END AS stoptime_as_timestamp
+FROM NYC_CitiBike.tripdata
+WHERE tripduration is not null </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/31dc799c7987b164.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="完成並儲存此 paragraph" duration="0">
+        <p>完成並儲存此 paragraph</p>
+<p class="image-container"><img style="width: 601.70px" src="img/97525addafda2cc4.png"></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

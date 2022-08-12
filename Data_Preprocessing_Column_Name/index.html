@@ -1,0 +1,156 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>資料預處理 - 檢查資料的 column name</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="data preprocessing - column name"
+                  title="資料預處理 - 檢查資料的 column name"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>當你拿到數筆資料時，需要先檢查每一筆的資料欄位名稱（Column Name）是否相同，才能將所有資料 load 進 Incorta 當作同一個資料表（table）</p>
+<p>如果有發現任何 column name 不同的情形，就需要做資料預處理～</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>下面兩個不同月份的資料，看到他們的 column name 有些不同，上面的是 tripduration, starttime, stoptime, ...；下面的則是 Trip Duration, Start Time, Stop Time, ... ，因此需要做預處理</p>
+<p class="image-container"><img style="width: 601.70px" src="img/f5351b36b4967e16.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/6fdc1cbc5b79a37c.png"></p>
+<aside class="special"><p><strong>Note: </strong>只要是有大小寫不同或是空格不同，都屬於 column name 不同的情形，都必須要做資料預處理</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="需要軟體" duration="0">
+        <p>mac內建 terminal 終端機、Sublime 編輯器</p>
+<h2 is-upgraded><strong>terminal 終端機</strong></h2>
+<p class="image-container"><img style="width: 230.21px" src="img/fd71d4d0ef40d535.png"></p>
+<h2 is-upgraded><strong>Sublime 編輯器</strong></h2>
+<p class="image-container"><img style="width: 225.00px" src="img/2365fc61820a38d6.png"></p>
+<p><a href="https://www.sublimetext.com" target="_blank">https://www.sublimetext.com</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="開啟終端機 terminal" duration="0">
+        <p>使用mac內建terminal 終端機做處理，開啟terminal 輸入資料存放位置</p>
+<p><code>cd ~/[資料存放位置]</code></p>
+<p>ex : <code>cd ~/Downloads/citibike-tripdata</code><strong><code>/</code></strong></p>
+<p class="image-container"><img style="width: 601.70px" src="img/1a038f7ba08c66a6.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="查看第一列 column name" duration="0">
+        <p>利用<code>head -1</code>查看所有data的第一列 column name</p>
+<p><code>head -1 *.csv</code></p>
+<p class="image-container"><img style="width: 601.70px" src="img/c2c68fc3e9fe104b.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="去除檔案名稱" duration="0">
+        <p>去除檔案名，僅查看第一列 column name</p>
+<p><code>find . -name '*.csv' -exec head -1 {} \;</code></p>
+<p class="image-container"><img style="width: 601.70px" src="img/447ed842e3018268.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="將所有column name存檔" duration="0">
+        <p>存檔存成 result.txt (任何名稱的 .txt 檔案都可以)</p>
+<p><code>find . -name '*.csv' -exec head -1 {} \;>result.txt</code></p>
+<p class="image-container"><img style="width: 527.42px" src="img/53a3bd369f0cdca8.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="找出不同 column name 並存檔" duration="0">
+        <p>只留下不同 column name 的結果，並存成 .txt 檔案</p>
+<p><code>sort result.txt |uniq>sorted_result.txt</code></p>
+<p class="image-container"><img style="width: 524.84px" src="img/4a29ec8547c0de4e.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="用 Sublime 打開 sorted_result.txt 查看" duration="0">
+        <p>用 Sublime 打開 sorted_result.txt 查看</p>
+<p>可以發現不一樣的是第三行 </p>
+<p><code>"Trip Duration,Start Time,Stop Time,Start Station ID,Start Station Name,Start Station Latitude,Start Station Longitude,End Station ID,End Station Name,End Station Latitude,End Station Longitude,Bike ID,User Type,Birth Year,Gender"</code></p>
+<p class="image-container"><img style="width: 426.02px" src="img/2250403c7ca92135.png"></p>
+<p class="image-container"><img style="width: 431.45px" src="img/29cb2687b2dc0f73.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="找出不同 column name 的檔案有幾個" duration="0">
+        <p><code>grep "不同的地方" *.csv|wc -l</code></p>
+<p>ex : </p>
+<p><code>grep "Trip Duration,Start Time,Stop Time,Start Station ID,Start Station Name,Start Station Latitude,Start Station Longitude,End Station ID,End Station Name,End Station Latitude,End Station Longitude,Bike ID,User Type,Birth Year,Gender" *.csv|wc -l</code></p>
+<p>結果有6個檔案（6個月）的 column name 不同</p>
+<p class="image-container"><img style="width: 601.70px" src="img/c66c3ee1c200cffe.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="將所有檔名和 column name 存檔" duration="0">
+        <p>先將所有檔名和第一列存起來，存成 .txt 檔</p>
+<p><code>head -1 *.csv>head.txt</code></p>
+<p class="image-container"><img style="width: 610.25px" src="img/74264afe7e659b43.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="尋找不同之處並修改" duration="0">
+        <p>用 Sublime 開啟 head.txt ，利用 cmd+F 搜尋 <code>"不同的column name" -> Trip Duration,Start Time,Stop Time,Start Station ID,Start Station Name,Start Station Latitude,Start Station Longitude,End Station ID,End Station Name,End Station Latitude,End Station Longitude,Bike ID,User Type,Birth Year,Gender</code>，找出哪幾個檔案 column name 不同，並且直接透過Sublime修改</p>
+<p>可以發現不同的分別是：201610, 201611, 201612, 201701, 201702, 201703</p>
+<p>直接利用 Sublime 將 column name 修改成 <code>"tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station name","end station latitude","end station longitude","bikeid","usertype","birth year","gender"</code> 並存檔</p>
+<p class="image-container"><img style="width: 458.45px" src="img/e5012eda372d5ce1.png"></p>
+<p class="image-container"><img style="width: 461.91px" src="img/6f2f9886e937fc5e.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="將檔案 load 進 Incorta" duration="0">
+        <p>完成後就可以將檔案 load 進 Incorta</p>
+<p class="image-container"><img style="width: 601.70px" src="img/cde2a6ab6222b367.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="重新 Full Load" duration="0">
+        <p>再將所有資料重新Full Load</p>
+<p class="image-container"><img style="width: 601.70px" src="img/b0c2379ee4e7491e.png"></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
