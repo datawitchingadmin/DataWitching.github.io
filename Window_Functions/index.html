@@ -1,0 +1,283 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Window Functions</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="Window_Functions"
+                  title="Window Functions"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>通常需要連續計算的資料需要多個 Subquery 來執行，但是這會讓 Code 變得很長又難懂，更會讓電腦的運算時間變得很長，因此這時候可以利用 Window Functions 來取代冗長的 Subquery，又可以減短運算時間。</p>
+<p>主要以 CitiBike 資料介紹 lag 函數，其他的 window functions 以此類推。</p>
+<h2 is-upgraded><strong>Window Functions 例子</strong></h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>lag</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>lead</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>rank</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>dense_rank</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>avg</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>sum</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>row_number</p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="OVER" duration="0">
+        <p><code>OVER ([PARTITION BY column1] [ORDER BY column2])</code></p>
+<p><code>OVER()</code> clause 是個常常和 window function 一起用的指令，類似於使用 subquery 在</p>
+<p>SELECT 指令中，但是它可以使得 query 運算更迅速，他的應用範圍也很廣。</p>
+<ul>
+<li><code>PARTITION BY</code>  根據指定欄位 <code>colunm1</code> 做分類，僅會依照分類做計算，不同分類分開計算</li>
+<li><code>ORDER BY</code> 根據指定欄位 <code>column2</code> 排序</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="lag - 找上一列的值" duration="0">
+        <p><code>lag(input[, offset[, default]]) [OVER (PARTITION BY column1 ORDER BY column2)]</code></p>
+<ul>
+<li>Returns the value of <code>input</code> at the <code>offset</code>th row before the current row in the window. The default value of <code>offset</code> is 1 and the default value of <code>default</code> is null. If the value of <code>input</code> at the <code>offset</code>th row is null, null is returned. If there is no such offset row (e.g., when the offset is 1, the first row of the window does not have any previous row), <code>default</code> is returned.</li>
+<li>此函數會回傳前一列（或是前 <code>offset</code> 列）我們指定的欄位值 <code>input</code>，並建立新的欄位。當我們所指定要回傳的欄位值為「空」時，會回傳 null (<code>default</code>)</li>
+<li><code>offset</code> 的預設值為 1 ，<code>default</code> 的預設值為 null </li>
+<li><code>PARTITION BY</code>  根據指定欄位 <code>colunm1</code> 做分類</li>
+<li><code>ORDER BY</code> 根據指定欄位 <code>column2</code> 排序</li>
+</ul>
+<h2 is-upgraded><strong>Arguments:</strong></h2>
+<ul>
+<li><code>input</code> - a string expression to evaluate <code>offset</code> rows before the current row.</li>
+<li><code>offset</code> - an int expression which is rows to jump back in the partition.</li>
+<li><code>default</code> - a string expression which is to use when the offset row does not exist.</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>用 lag 函數的欄位會依據欄位 a 分類，回傳指定欄位 b 中前一列的值，若是沒有值，則回傳 null</p>
+<pre><code>&gt; SELECT a, b, lag(b) OVER (PARTITION BY a ORDER BY b) 
+  FROM VALUES (&#39;A1&#39;, 2), (&#39;A1&#39;, 1), (&#39;A2&#39;, 3), (&#39;A1&#39;, 1) tab(a, b);
+ A1 1   NULL
+ A1 1   1
+ A1 2   1
+ A2 3   NULL</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>以 CitiBike 資料為例，為了找到單車的閒置時間，需要找到此單車前一次還車的車站和時間，利用 lag 函數可以根據 bikeid 分類找到前一次的還車時間和還車車站</p>
+<pre><code>%sql
+SELECT  bikeid, start_station_id, starttime_as_timestamp as this_trip_starttime, stoptime_as_timestamp as this_trip_stoptime, end_station_id,
+            lag(stoptime_as_timestamp) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) previous_trip_stoptime ,
+            lag(end_station_id) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) previous_station_id,
+            (CASE WHEN start_station_id = (lag(end_station_id) OVER(partition by bikeid order by starttime_as_timestamp)) THEN &#39;same&#39;
+             ELSE &#39;diff&#39; END) as start_end
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/ccf2d9ee9787b948.png"></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>計算完閒置時間，並利用 Subquery 篩選此次開始時間是晚於上次還車時間的資料，以避免閒置時間出現負數的情形，呈現結果如下：</p>
+<pre><code>%sql
+SELECT *
+FROM(
+    SELECT  bikeid, start_station_id, starttime_as_timestamp as this_trip_starttime,
+            lag(stoptime_as_timestamp) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) previous_trip_stoptime ,
+            lag(end_station_id) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) previous_station_id,
+            (CASE WHEN start_station_id = (lag(end_station_id) OVER(partition by bikeid order by starttime_as_timestamp)) THEN &#39;same&#39;
+             ELSE &#39;diff&#39; END) as start_end,
+            (to_unix_timestamp(starttime_as_timestamp) - to_unix_timestamp(lag(stoptime_as_timestamp) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp)))/60 idle_time_in_min,
+            stoptime_as_timestamp as this_trip_stoptime, end_station_id, start_station_name, end_station_name,
+            lag(end_station_name) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) previous_station_name
+    FROM NYC_CitiBike.DATE_HANDLING)
+WHERE this_trip_starttime &gt;= previous_trip_stoptime</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/9a2ef68dd3b0a702.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="lead - 找下一列的值" duration="0">
+        <p><code>lead(input[, offset[, default]]) [OVER (PARTITION BY column1 ORDER BY column2)]</code></p>
+<ul>
+<li>Returns the value of <code>input</code> at the <code>offset</code>th row after the current row in the window. The default value of <code>offset</code> is 1 and the default value of <code>default</code> is null. If the value of <code>input</code> at the <code>offset</code>th row is null, null is returned. If there is no such an offset row (e.g., when the offset is 1, the last row of the window does not have any subsequent row), <code>default</code> is returned.</li>
+<li>此函數會回傳下一列（或是下 <code>offset</code> 列）我們指定的欄位值 <code>input</code>，並建立新的欄位。當我們所指定要回傳的欄位值為「空」時，會回傳 null (<code>default</code>)</li>
+<li><code>offset</code> 的預設值為 1 ，<code>default</code> 的預設值為 null </li>
+<li><code>PARTITION BY</code>  根據指定欄位 <code>colunm1</code> 做分類</li>
+<li><code>ORDER BY</code> 根據指定欄位 <code>column2</code> 排序</li>
+</ul>
+<h2 is-upgraded><strong>Arguments:</strong></h2>
+<ul>
+<li><code>input</code> - a string expression to evaluate <code>offset</code> rows after the current row.</li>
+<li><code>offset</code> - an int expression which is rows to jump ahead in the partition.</li>
+<li><code>default</code> - a string expression which is to use when the offset is larger than the window. The default value is null.</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>用 lead 函數的欄位會依據欄位 a 分類，回傳指定欄位 b 中後一列的值，若是沒有值，則回傳 null</p>
+<pre><code>&gt; SELECT a, b, lead(b) OVER (PARTITION BY a ORDER BY b) FROM VALUES (&#39;A1&#39;, 2), (&#39;A1&#39;, 1), (&#39;A2&#39;, 3), (&#39;A1&#39;, 1) tab(a, b);
+ A1 1   1
+ A1 1   2
+ A1 2   NULL
+ A2 3   NULL</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>以 CitiBike 資料為例，為了找到單車的閒置時間，需要找到此單車使用前後的還車車站和時間以及下一次的借車車站和時間。前一個方法是利用 lag() 函數找到前一次的還車時間和還車車站，也可以利用 lead() 函數找到下一次的開始時間和開始車站</p>
+<pre><code>%sql
+SELECT  bikeid, start_station_id, starttime_as_timestamp as this_trip_starttime, stoptime_as_timestamp as this_trip_stoptime, end_station_id,
+        lead(starttime_as_timestamp) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) next_trip_starttime ,
+        lead(start_station_id) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) next_station_id,
+        (CASE WHEN end_station_id = (lead(start_station_id) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp)) THEN &#39;same&#39;
+         ELSE &#39;diff&#39; END) as start_end
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/d92a7664ef0b273f.png"></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>計算完閒置時間，並利用 Subquery 篩選下次開始時間是晚於此次還車時間的資料，以避免閒置時間出現負數的情形，呈現結果如下：</p>
+<pre><code>%sql
+SELECT *
+FROM(
+    SELECT  bikeid, start_station_id, starttime_as_timestamp as this_trip_starttime, stoptime_as_timestamp as this_trip_stoptime, end_station_id,
+            lead(starttime_as_timestamp) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) next_trip_starttime ,
+            lead(start_station_id) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) next_station_id,
+            (CASE WHEN end_station_id = (lead(start_station_id) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp)) THEN &#39;same&#39;
+             ELSE &#39;diff&#39; END) as start_end,
+            (to_unix_timestamp(lead(starttime_as_timestamp) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp)) - to_unix_timestamp(stoptime_as_timestamp))/60 idle_time_in_min,
+            start_station_name, end_station_name,
+            lead(start_station_name) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) next_station_name
+    FROM NYC_CitiBike.DATE_HANDLING)
+WHERE this_trip_stoptime &gt;= next_trip_starttime</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/ea8b16c9c845f02f.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="rank" duration="0">
+        <p><code>rank()</code></p>
+<ul>
+<li>Computes the rank of a value in a group of values. The result is one plus the number of rows preceding or equal to the current row in the ordering of the partition. The values will produce gaps in the sequence.</li>
+<li>計算所指定值在同一欄位的排行 rank ，若是有兩個相同順序，將會跳過一個數字，例如：有兩個同為排序一者，再下一個的排序則為<strong>排序三</strong>。</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT a, b, rank(b) OVER (PARTITION BY a ORDER BY b) FROM VALUES (&#39;A1&#39;, 2), (&#39;A1&#39;, 1), (&#39;A2&#39;, 3), (&#39;A1&#39;, 1) tab(a, b);
+ A1 1   1
+ A1 1   1
+ A1 2   3
+ A2 3   1</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="dense_rank" duration="0">
+        <p><code>dense_rank() </code></p>
+<ul>
+<li>Computes the rank of a value in a group of values. The result is one plus the previously assigned rank value. Unlike the function rank, dense_rank will not produce gaps in the ranking sequence.</li>
+<li>計算所指定值在同一欄位的排行 rank ，和<code>rank()</code>不同的是，若是有相同的排序時，下一個的序號並不會跳過數字，會是連續的排序。例如：有兩個同為排序一者，再下一個的排序則為<strong>排序二</strong>。</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT a, b, dense_rank(b) OVER (PARTITION BY a ORDER BY b) FROM VALUES (&#39;A1&#39;, 2), (&#39;A1&#39;, 1), (&#39;A2&#39;, 3), (&#39;A1&#39;, 1) tab(a, b);
+ A1 1   1
+ A1 1   1
+ A1 2   2
+ A2 3   1</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="avg" duration="0">
+        <p><code>avg(expr) </code></p>
+<ul>
+<li>Returns the mean calculated from values of a group.</li>
+<li>此函數會回傳計算過後的平均數</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT avg(col) FROM VALUES (1), (2), (3) AS tab(col);
+ 2.0
+&gt; SELECT avg(col) FROM VALUES (1), (2), (NULL) AS tab(col);
+ 1.5</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 AVG() 搭配 OVER() 可以分別計算出每台自行車分別的平均租車時間、總平均租車時間，正好可以比較不同台車的平均租車時間對於平均租車時間的差異，也可以看出每一趟租車是大於或小於平均值</p>
+<pre><code>%sql
+SELECT  bikeid, starttime_as_timestamp, stoptime_as_timestamp, tripduration, 
+        AVG(tripduration) OVER(PARTITION BY bikeid) avg_tripduration_by_bikeid, 
+        AVG(tripduration) OVER() as overall_avg_tripduration
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/ec4a2304d4d08582.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="sum" duration="0">
+        <p><code>sum(expr)</code> </p>
+<ul>
+<li>Returns the sum calculated from values of a group.</li>
+<li>此函數會回傳計算過後的總和</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT sum(col) FROM VALUES (5), (10), (15) AS tab(col);
+ 30
+&gt; SELECT sum(col) FROM VALUES (NULL), (10), (15) AS tab(col);
+ 25
+&gt; SELECT sum(col) FROM VALUES (NULL), (NULL) AS tab(col);
+ NULL</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 SUM() 搭配 OVER() 可以分別計算出每台自行車分別的總租車時間，可以比較不同台車的總租車時間的差異</p>
+<pre><code>%sql
+SELECT  bikeid, starttime_as_timestamp, stoptime_as_timestamp, tripduration, 
+        SUM(tripduration) OVER(PARTITION BY bikeid) as sum_tripduration_by_bikeid
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/e1222d9311d84275.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="row_number" duration="0">
+        <h2 is-upgraded><code>row_number() </code></h2>
+<ul>
+<li><h2 is-upgraded>Assigns a unique, sequential number to each row, starting with one, according to the ordering of rows within the window partition.</h2>
+</li>
+<li>會回傳所指定值是第幾列（row number）</li>
+</ul>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>&gt; SELECT a, b, row_number() OVER (PARTITION BY a ORDER BY b) FROM VALUES (&#39;A1&#39;, 2), (&#39;A1&#39;, 1), (&#39;A2&#39;, 3), (&#39;A1&#39;, 1) tab(a, b);
+ A1 1   1
+ A1 1   2
+ A1 2   3
+ A2 3   1</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Reference" duration="0">
+        <h2 is-upgraded><strong>Spark SQL Functions</strong></h2>
+<p><a href="https://spark.apache.org/docs/latest/api/sql/#built-in-functions" target="_blank">https://spark.apache.org/docs/latest/api/sql/#built-in-functions</a></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
