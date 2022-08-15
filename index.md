@@ -19,4 +19,5 @@ Unit 5: [Basic SQL](Basic_SQL/)
 
 Unit 6: [Date Functions & Timestamp Functions](DateFunctions_TimestampFunctions/)
 
+Unit 7: [Window Functions](Window_Functions/) 
 
