@@ -17,7 +17,9 @@ Unit 4: [Data Preprocessing - to_timestamp](Data_Preprocessing_to_timestamp/)
 
 Unit 5: [Basic SQL](Basic_SQL/)
 
-Unit 6: [Date Functions & Timestamp Functions](DateFunctions_TimestampFunctions/)
+Unit 6: [CitiBikes Analysis with SQL](CitiBikes_Analysis_with_SQL)
 
-Unit 7: [Window Functions](Window_Functions/) 
+Unit 7: [Date Functions & Timestamp Functions](DateFunctions_TimestampFunctions/)
+
+Unit 8: [Window Functions](Window_Functions/) 
 
