@@ -1,0 +1,393 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>CitiBikes Analysis with SQL</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="CitiBikes_Analysis_with_SQL"
+                  title="CitiBikes Analysis with SQL"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>這篇 codelab 想藉由Incorta Notebook 的 SQL，分析 NYC Citibike 的資料，介紹簡單好入門的 SQL 運算應用，因此需要使用到 NYC Citibike 資料，可以先進入 NYC Citibike 網站下載資料。</p>
+<p>NYC Citibike 網站：</p>
+<p><a href="https://ride.citibikenyc.com/system-data" target="_blank">https://ride.citibikenyc.com/system-data</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="開啟 Incorta Notebook" duration="0">
+        <p>Schema →  +New →  Material View →  Choose Language →  Edit in Notebook</p>
+<p class="image-container"><img style="width: 601.70px" src="img/935b6c3ec7f0144d.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/e4cb505d2da8c7d7.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/89348b90ad7010e8.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="分類變數" duration="0">
+        <ul>
+<li>啟始站</li>
+<li>終點站</li>
+<li>借車時間</li>
+<li>還車時間</li>
+</ul>
+<p>利用 <code>SELECT</code> <code>FROM</code>  選取特定需要的欄位，在此我們選了 start_station_name, end_station_name, starttime_as_timestamp, stoptime_as_timestamp 四個欄位，可以大概看出每台自行車是幾點幾分從哪一站被借出，幾點幾分在哪一站還車的。</p>
+<pre><code>%sql
+SELECT start_station_name, end_station_name, starttime_as_timestamp, stoptime_as_timestamp
+FROM NYC_CitiBike.DATE_HANDLING
+ORDER BY starttime_as_timestamp</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/9419b73e2bcb28ee.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="由時間延伸出來的分類變數" duration="0">
+        <h2 is-upgraded><strong>- 年</strong></h2>
+<p>以年作為分類，計算每一年自行車被租借次數，並畫出次數分配圖</p>
+<pre><code>%sql
+SELECT year(starttime_as_timestamp) as Year, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY Year
+ORDER BY Year</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/bd691845f5ecf85e.png"></p>
+<h2 is-upgraded><strong>- 月份</strong></h2>
+<p>以月份作為分類，計算一年中的每個月自行車被租借次數，並畫出次數分配圖</p>
+<pre><code>%sql
+SELECT month(starttime_as_timestamp) as Month, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY Month
+ORDER BY Month</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/374490f8b3cb4228.png"></p>
+<h2 is-upgraded><strong>- 季</strong></h2>
+<p>以季作為分類，計算一年中的每個季自行車被租借次數，並畫出次數分配圖</p>
+<pre><code>%sql
+SELECT quarter(starttime_as_timestamp) as Quarter, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY Quarter
+ORDER BY Quarter</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/7b20391cac343105.png"></p>
+<h2 is-upgraded><strong>- 星期幾</strong></h2>
+<p>以星期作為分類，計算一週中的每一天（星期幾）自行車被租借次數，並畫出次數分配圖</p>
+<pre><code>%sql
+SELECT dayofweek(starttime_as_timestamp) as day_of_week, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY day_of_week
+ORDER BY day_of_week</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/26b23929f0076fdd.png"></p>
+<h2 is-upgraded><strong>- 假日</strong></h2>
+<p>以平日、假日作為分類，計算平日和假日自行車被租借次數，並畫出次數分配圖</p>
+<pre><code>%sql
+SELECT CASE WHEN dayofweek(starttime_as_timestamp) &gt;=1 and dayofweek(starttime_as_timestamp) &lt;=5 THEN &#39;weekdays&#39;
+                WHEN dayofweek(starttime_as_timestamp) &gt;=6 and dayofweek(starttime_as_timestamp) &lt;=7 THEN &#39;weekends&#39;
+                END as weekdays_or_weekends
+            , COUNT(*) as counts
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY 1</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/e48b68419e7c9a38.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/98d745b8ce039973.png"></p>
+<h2 is-upgraded><strong>- 幾點</strong></h2>
+<p>以小時作為分類，計算一天中的每個小時自行車被租借次數，並畫出次數分配圖</p>
+<pre><code>%sql
+SELECT hour(starttime_as_timestamp) hour, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY hour
+ORDER BY hour</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/c46de672e2878f7e.png"></p>
+<h2 is-upgraded><strong>- 早中晚</strong></h2>
+<p>以每6小時作為分類，6點~12點定義為早上，12點~18點定義為下午，18點~24點定義為傍晚，0點~6點定義為夜晚，計算一天中的早、中、晚、半夜自行車被租借次數，並畫出次數分配圖</p>
+<pre><code>%sql
+SELECT CASE WHEN HOUR(starttime_as_timestamp) &gt;= 6  and HOUR(starttime_as_timestamp) &lt; 12 THEN  &#39;morning&#39;
+            WHEN HOUR(starttime_as_timestamp) &gt;= 12 and HOUR(starttime_as_timestamp) &lt; 18 THEN &#39;afternoon&#39;
+            WHEN HOUR(starttime_as_timestamp) &gt;= 18 and HOUR(starttime_as_timestamp) &lt; 24 THEN &#39;evening&#39;
+            WHEN HOUR(starttime_as_timestamp) &gt;= 0 and HOUR(starttime_as_timestamp) &lt; 6 THEN &#39;night&#39;
+            ELSE &#39;other&#39;
+            END AS TIME_OF_DAY,
+       count(*) frequency
+FROM(NYC_CitiBike.DATE_HANDLING)
+GROUP BY TIME_OF_DAY</code></pre>
+<p>由圖可見，下午是最多人使用腳踏車的時段，其次是早上和傍晚，夜晚幾乎沒有被使用</p>
+<h3 is-upgraded># 長條圖</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/39163838062018f7.png"></p>
+<h3 is-upgraded># 圓餅圖</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/aa8dd3526e615fef.png"></p>
+<h2 is-upgraded><strong>- 使用的時間長短</strong></h2>
+<h3 is-upgraded># 每一站每台腳踏車被使用的時間 (秒)</h3>
+<pre><code>%sql
+SELECT start_station_name, bikeid, tripduration
+FROM NYC_CitiBike.DATE_HANDLING
+ORDER BY start_station_name, tripduration</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/adf026b30ff39e3.png"></p>
+<h3 is-upgraded># 每台腳踏車被使用的總時數 (小時)</h3>
+<pre><code>%sql
+SELECT bikeid, sum(round(tripduration/3600)) as duration_in_hour
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY bikeid
+ORDER BY sum(round(tripduration/60)) DESC  </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/5757b37f86ddf7a7.png"></p>
+<h3 is-upgraded># trip durattion 的平均數、標準差、變異數</h3>
+<pre><code>%sql
+SELECT avg(tripduration) as avg_duratiion, 
+       variance(tripduration) as var_duration, 
+       stddev(tripduration) as sd_duration
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/92fd54fd51ca0c53.png"></p>
+<h3 is-upgraded># Trip duration 次數分配圖</h3>
+<p># 幾乎所有借還時間都在1小時內</p>
+<pre><code>%sql
+SELECT CASE WHEN tripduration &lt;= 3600 THEN &#34;01 hour&#34;
+            WHEN tripduration &gt;= 3600 AND tripduration &lt;= 3600*2 THEN &#34;02 hours&#34;
+            WHEN tripduration &gt;= 3600*2 AND tripduration &lt;= 3600*3 THEN &#34;03 hours&#34;
+            WHEN tripduration &gt;= 3600*3 AND tripduration &lt;= 3600*4 THEN &#34;04 hours&#34;
+            WHEN tripduration &gt;= 3600*4 AND tripduration &lt;= 3600*5 THEN &#34;05 hours&#34;
+            WHEN tripduration &gt;= 3600*5 AND tripduration &lt;= 3600*6 THEN &#34;06 hours&#34;
+            WHEN tripduration &gt;= 3600*6 AND tripduration &lt;= 3600*7 THEN &#34;07 hours&#34;
+            WHEN tripduration &gt;= 3600*7 AND tripduration &lt;= 3600*8 THEN &#34;08 hours&#34;
+            WHEN tripduration &gt;= 3600*8 AND tripduration &lt;= 3600*9 THEN &#34;09 hours&#34;
+            WHEN tripduration &gt;= 3600*9 AND tripduration &lt;= 3600*10 THEN &#34;10 hours&#34;
+            WHEN tripduration &gt;= 3600*10 AND tripduration &lt;= 3600*11 THEN &#34;11 hours&#34;
+            WHEN tripduration &gt;= 3600*11 AND tripduration &lt;= 3600*12 THEN &#34;12 hours&#34;
+            WHEN tripduration &gt;= 3600*12 AND tripduration &lt;= 3600*13 THEN &#34;13 hours&#34;
+            WHEN tripduration &gt;= 3600*13 AND tripduration &lt;= 3600*14 THEN &#34;14 hours&#34;
+            WHEN tripduration &gt;= 3600*14 AND tripduration &lt;= 3600*15 THEN &#34;15 hours&#34;
+            WHEN tripduration &gt;= 3600*15 AND tripduration &lt;= 3600*16 THEN &#34;16 hours&#34;
+            WHEN tripduration &gt;= 3600*16 AND tripduration &lt;= 3600*17 THEN &#34;17 hours&#34;
+            WHEN tripduration &gt;= 3600*17 AND tripduration &lt;= 3600*18 THEN &#34;18 hours&#34;
+            WHEN tripduration &gt;= 3600*18 AND tripduration &lt;= 3600*19 THEN &#34;19 hours&#34;
+            WHEN tripduration &gt;= 3600*19 AND tripduration &lt;= 3600*20 THEN &#34;20 hours&#34;
+            WHEN tripduration &gt;= 3600*20 AND tripduration &lt;= 3600*21 THEN &#34;21 hours&#34;
+            WHEN tripduration &gt;= 3600*21 AND tripduration &lt;= 3600*22 THEN &#34;22 hours&#34;
+            WHEN tripduration &gt;= 3600*22 AND tripduration &lt;= 3600*23 THEN &#34;23 hours&#34;
+            WHEN tripduration &gt;= 3600*23 AND tripduration &lt;= 3600*24 THEN &#34;24 hours&#34; END as duratuion_category,
+        COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY duratuion_category
+ORDER BY duratuion_category</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/36497c4a387d0ac5.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/2bf7e21794f4ac4f.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/3c022cc9d82a0977.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/f29dcb63015d4b50.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="排行前十名" duration="0">
+        <h2 is-upgraded><strong>前十名借最多次的借車站</strong></h2>
+<pre><code>%sql
+SELECT start_station_name, COUNT(*) number_of_lending
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY start_station_name
+ORDER BY COUNT(*) DESC </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/ab89c0021f3be61b.png"></p>
+<h2 is-upgraded><strong>前十名借最多次的還車站</strong></h2>
+<pre><code>%sql
+SELECT end_station_name, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY end_station_name
+ORDER BY COUNT(*) DESC </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/74e4665d47155f26.png"></p>
+<h2 is-upgraded>前十名最多次借還同一個地點的站</h2>
+<pre><code>%sql
+SELECT start_station_name, end_station_name, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE start_station_name = end_station_name
+GROUP BY start_station_name, end_station_name
+ORDER BY COUNT(*) DESC </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/2e11adce28d0c8f4.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="三年內總租車次數 (2016-2018)" duration="0">
+        <h2 is-upgraded>前十名借最多次的借車站</h2>
+<pre><code>%sql
+SELECT start_station_name, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE year(starttime_as_timestamp) BETWEEN 2016 and 2018
+GROUP BY start_station_name
+ORDER BY COUNT(*) DESC</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/365dbc4578dc164e.png"></p>
+<h2 is-upgraded>前十名還最多次的還車站</h2>
+<pre><code>%sql
+SELECT end_station_name, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE year(stoptime_as_timestamp) BETWEEN 2016 and 2018
+GROUP BY end_station_name
+ORDER BY COUNT(*) DESC</code></pre>
+<p class="image-container"><img style="width: 583.19px" src="img/bc32dc1f4f1e2504.png"></p>
+<h2 is-upgraded><strong>前十名最多次借還同一個地點的站</strong></h2>
+<pre><code>%sql
+SELECT start_station_name, end_station_name, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE year(starttime_as_timestamp) BETWEEN 2016 and 2018
+ AND start_station_name = end_station_name
+GROUP BY start_station_name, end_station_name
+ORDER BY COUNT(*) DESC</code></pre>
+<p class="image-container"><img style="width: 584.81px" src="img/d05e6499cc3f5934.png"></p>
+<h2 is-upgraded><strong>最少使用的車站</strong></h2>
+<p>#發現有些車站竟然只有被借或還一次</p>
+<pre><code>%sql
+SELECT station_name, COUNT(*) as used_frequency, min(used_time) as first_used, max(used_time) as lastet_used 
+FROM(
+    SELECT start_station_name as station_name, starttime_as_timestamp as used_time
+    FROM NYC_CitiBike.DATE_HANDLING
+    UNION ALL
+    SELECT end_station_name, stoptime_as_timestamp
+    FROM NYC_CitiBike.DATE_HANDLING
+)
+GROUP BY station_name
+ORDER BY COUNT(*), first_used</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/10a5c06d2996efb2.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/84d087c81c90f041.png"></p>
+<h2 is-upgraded><strong>借還車比率懸殊的車站</strong></h2>
+<pre><code>%sql
+SELECT t1.start_station_name as station_name, t1.count_of_start, t2.count_of_end, 
+        (t1.count_of_start/(t1.count_of_start+t2.count_of_end)) as propotion_of_start,
+        (t2.count_of_end/(t1.count_of_start+t2.count_of_end)) as propotion_of_end,
+        abs((t1.count_of_start/(t1.count_of_start+t2.count_of_end))-(t2.count_of_end/(t1.count_of_start+t2.count_of_end))) as propotion_of_diff
+FROM (SELECT start_station_name, COUNT(*) count_of_start
+    FROM NYC_CitiBike.DATE_HANDLING
+    WHERE year(starttime_as_timestamp) BETWEEN 2016 and 2018
+    GROUP BY start_station_name) as t1
+INNER JOIN (SELECT end_station_name, COUNT(*) count_of_end
+            FROM NYC_CitiBike.DATE_HANDLING
+            WHERE year(stoptime_as_timestamp) BETWEEN 2016 and 2018
+            GROUP BY end_station_name) as t2
+ON t1.start_station_name = t2.end_station_name
+ORDER BY propotion_of_diff DESC </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/652b3e64ea9b956a.png"><img style="width: 601.70px" src="img/b8701f026f2607e1.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="三年內租車次數的變化" duration="0">
+        <h2 is-upgraded><strong>按月來看租車是否有季節性</strong></h2>
+<pre><code>%sql
+SELECT month(starttime_as_timestamp) as Month, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE year(stoptime_as_timestamp) BETWEEN 2016 and 2018
+GROUP BY Month
+ORDER BY Month </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/409c4bf08d37608e.png"></p>
+<h2 is-upgraded><strong>按週來看租車是否有季節性</strong></h2>
+<pre><code>%sql
+SELECT weekofyear(starttime_as_timestamp) as Week_of_Year, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE year(stoptime_as_timestamp) BETWEEN 2016 and 2018
+GROUP BY Week_of_Year
+ORDER BY Week_of_Year</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/bce5de9267614f00.png"></p>
+<h2 is-upgraded><strong>按每星期中的星期幾是否不同</strong></h2>
+<pre><code>%sql
+SELECT dayofweek(starttime_as_timestamp) as Day_of_Week, COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE year(stoptime_as_timestamp) BETWEEN 2016 and 2018
+GROUP BY Day_of_Week
+ORDER BY Day_of_Week</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/8073b7c5457031b0.png"></p>
+<p>以上這些敘述統計</p>
+<p>可以再以車站來做區分</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="租車時間長短的敘述統計" duration="0">
+        <h2 is-upgraded><strong>平均租車時間</strong></h2>
+<h3 is-upgraded># 所有租借平均租車時間 962.49 秒，16.04分鐘</h3>
+<pre><code>%sql
+SELECT avg(tripduration) as avg_tripduration,  avg(tripduration)/60 as avg_tripduration_in_minutes
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/ffec40a86d6bc2bc.png"></p>
+<h3 is-upgraded># 借出站的平均租借時間</h3>
+<pre><code>%sql
+SELECT start_station_name, avg(tripduration)/60 as avg_tripduration
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY start_station_name
+ORDER BY avg_tripduration</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/d10a73235d8d23a6.png"></p>
+<h3 is-upgraded># 還車站的平均租借時間</h3>
+<pre><code>%sql
+SELECT end_station_name, avg(tripduration)/60 as avg_tripduration
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY end_station_name
+ORDER BY avg_tripduration </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/977a4b9c264018e0.png"></p>
+<h3 is-upgraded># 同站租還的平均租借時間</h3>
+<pre><code>%sql
+SELECT start_station_name, end_station_name, avg(tripduration)/60 as avg_tripduration
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE start_station_name = end_station_name
+GROUP BY start_station_name, end_station_name
+ORDER BY avg_tripduration</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/7dad3f75e1dfa0b0.png"></p>
+<h2 is-upgraded><strong>看租車時間的次數分配</strong></h2>
+<p># 每5分鐘為一個級距，圖形呈現右偏</p>
+<pre><code>%sql
+SELECT CASE WHEN tripduration &lt;= 60*5 THEN &#34;05 minute&#34;
+            WHEN tripduration &gt;= 60*5 AND tripduration &lt;= 60*10 THEN &#34;10 minutes&#34;
+            WHEN tripduration &gt;= 60*10 AND tripduration &lt;= 60*15 THEN &#34;15 minutes&#34;
+            WHEN tripduration &gt;= 60*15 AND tripduration &lt;= 60*20 THEN &#34;20 minutes&#34;
+            WHEN tripduration &gt;= 60*20 AND tripduration &lt;= 60*25 THEN &#34;25 minutes&#34;
+            WHEN tripduration &gt;= 60*25 AND tripduration &lt;= 60*30 THEN &#34;30 minutes&#34;
+            WHEN tripduration &gt;= 60*30 AND tripduration &lt;= 60*35 THEN &#34;35 minutes&#34;
+            WHEN tripduration &gt;= 60*35 AND tripduration &lt;= 60*40 THEN &#34;40 minutes&#34;
+            WHEN tripduration &gt;= 60*40 AND tripduration &lt;= 60*45 THEN &#34;45 minutes&#34;
+            WHEN tripduration &gt;= 60*45 AND tripduration &lt;= 60*50 THEN &#34;50 minutes&#34;
+            WHEN tripduration &gt;= 60*50 AND tripduration &lt;= 60*55 THEN &#34;55 minutes&#34;
+            WHEN tripduration &gt;= 60*55 AND tripduration &lt;= 60*60 THEN &#34;60 minutes&#34;
+            WHEN tripduration &gt; 60*60 THEN &#34;Over 1 hour&#34;
+            END as duratuion_category,
+        COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY duratuion_category
+ORDER BY duratuion_category</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/423d59de32644cd4.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/7304e0bf8515e6eb.png"></p>
+<h2 is-upgraded><strong>最高租車時間</strong></h2>
+<p># 最高租車時間為19510049秒，大約是325167.5分鐘，大約是5419.5小時，大約是225.8天</p>
+<pre><code>%sql
+SELECT tripduration, tripduration/60 as min,  tripduration/3600 as hour, tripduration/86400 as day
+FROM NYC_CitiBike.DATE_HANDLING
+ORDER BY tripduration DESC </code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/ed639fb07e8b3489.png"></p>
+<h2 is-upgraded><strong>最低租車時間</strong></h2>
+<p># 最低租車時間為60秒，可能是有規定未滿1分鐘以1分鐘計算，租車時間是60秒的有2584筆交易</p>
+<pre><code>%sql
+SELECT tripduration , COUNT(*)
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY tripduration
+ORDER BY tripduration</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/d44ea43306764926.png"></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

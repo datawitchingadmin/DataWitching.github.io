@@ -1,0 +1,37 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-08-15T17:47:55Z",
+  "id": "CitiBikes_Analysis_with_SQL",
+  "duration": 0,
+  "title": "CitiBikes Analysis with SQL",
+  "summary": "In this codelab, you'll learn some CitiBikes Analysis with SQL.",
+  "source": "1hvhGG74JR48e42Ucrc8tVuRRgoIMTpvWHKvtwF6gC0Y",
+  "theme": "web",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "web"
+  ],
+  "tags": [
+    "cds17",
+    "chrome-dev-summit-2016",
+    "devfest18",
+    "gdd17",
+    "io2016",
+    "io2017",
+    "io2018",
+    "io2019",
+    "jsconfeu",
+    "kiosk",
+    "pwa-dev-summit",
+    "pwa-roadshow",
+    "tag-web",
+    "typtwd17",
+    "web"
+  ],
+  "url": "CitiBikes_Analysis_with_SQL"
+}
