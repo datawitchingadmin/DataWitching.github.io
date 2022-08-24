@@ -23,3 +23,6 @@ Unit 7: [Date Functions & Timestamp Functions](DateFunctions_TimestampFunctions/
 
 Unit 8: [Window Functions](Window_Functions/) 
 
+Unit 9: [How to Do Transition from SQL to PySpark](Transition_from_SQL_to_PySpark/)
+
+Unit 10: [Making Histograms with Incorta Notebook](Making_Histograms_with_Incorta_Notebook/)
