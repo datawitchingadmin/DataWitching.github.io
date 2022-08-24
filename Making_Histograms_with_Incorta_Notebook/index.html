@@ -1,0 +1,219 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>如何用Incorta Notebook做Histogram(直方圖)</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="Making_Histograms_with_Incorta_Notebook"
+                  title="如何用Incorta Notebook做Histogram(直方圖)"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>在這個 Codelab 中，將會介紹如何用 Incorta Notebook 做 histogram（直方圖）</p>
+<p>在這我們將會用的是 PySpark 語言</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="建立一個新的 Materialized View" duration="0">
+        <h2 is-upgraded><strong>Step 1</strong></h2>
+<p>Schema → +New → Materialized View</p>
+<p class="image-container"><img style="width: 601.70px" src="img/5d01cc673529beaf.png"></p>
+<h2 is-upgraded><strong>Step 2</strong></h2>
+<p>在語言的地方選擇 Spark Python</p>
+<p>→ Edit in Notebook</p>
+<p class="image-container"><img style="width: 331.50px" src="img/9769dc6705eeddf.png"></p>
+<p class="image-container"><img style="width: 328.13px" src="img/a56ed2d98525a4b5.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="讀取 data" duration="0">
+        <p><code>read("Schema.Table")</code></p>
+<p>讀取 schema 中的 table</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/6be309a3e627b9db.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="篩選 data" duration="0">
+        <p><code>df.filter("篩選條件")</code></p>
+<p>篩選 data 將 tripduration 是 null 的資料剔除，只保留有數值的資料</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+df_duration = df.filter(&#34;tripduration is not null&#34;).select(&#34;tripduration&#34;)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/bba5d0f8ea94b6af.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="查看 data" duration="0">
+        <p><code>incorta.show(df)</code></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+incorta.show(df_duration)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/f723c4857fbff6b4.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="製作 Histogram 區間" duration="0">
+        <p><code>df.rdd.histogram</code></p>
+<p>利用 rdd.histogram 製作直方圖，找到 <strong>value range</strong> 和 <strong>range count</strong></p>
+<pre><code>[int(round(start+x*step)) for x in range(n)]</code></pre>
+<p>這個 code 可以用 python 產生出一個列表區間，不需要一個一個自己用手打</p>
+<h2 is-upgraded><strong>Example - for 迴圈</strong></h2>
+<p>從 0 開始，公差為 60，總共 60 個</p>
+<pre><code>x = [int(round(0+x*60)) for x in range(60)]</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/36696e80cca6f8a0.png"></p>
+<h2 is-upgraded><strong>Example - 一個一個手打</strong></h2>
+<pre><code>y = [0, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440, 1500, 1560, 1620, 1680, 1740, 1800, 1860, 1920, 1980, 2040, 2100, 2160, 2220, 2280, 2340, 2400, 2460, 2520, 2580, 2640, 2700, 2760, 2820, 2880, 2940, 3000, 3060, 3120, 3180, 3240, 3300, 3360, 3420, 3480, 3540]</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/22666c1f53f3e144.png"></p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用上方的 code 應用在 histogram 中，製作 histogram 級距為60秒，也就是1分鐘，並且最大值設為一星期的時間（60*60*24*7）</p>
+<p>若是要看 df.rdd 更多的使用方法，可以用 <code>help(df_duration.rdd)</code> 查看</p>
+<pre><code>%pyspark
+value_range, range_count = df_duration.rdd.map(lambda x: x[0]).histogram([int(round(0+x*60)) for x in range(60*24*7)])</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/1513c08851e4a876.png"></p>
+<h2 is-upgraded><strong>Reference</strong></h2>
+<p>python generate list interval：</p>
+<p><a href="https://www.codegrepper.com/code-examples/python/python+generate+list+interval" target="_blank">https://www.codegrepper.com/code-examples/python/python+generate+list+interval</a></p>
+<h2 is-upgraded><strong>Example - 若是不用 list interval</strong></h2>
+<p>這個例子和前一個例子最大的不同就是，histogram給的條件不一樣，前一個是給急遽為60秒，共一個星期10080個bar；而這一個例子只有給條件需要100個bar讓系統去切，但因為原本資料右偏的非常嚴重，導致切出來的數值，並不符合視覺直觀判斷（如下圖），因此才需要上面那個方法做histogram的級距</p>
+<pre><code>df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df_duration = df.filter(&#34;tripduration is not null&#34;).select(&#34;tripduration&#34;)
+value_range, range_count = df_duration.rdd.map(lambda x: x[0]).histogram(100)
+len(value_range), len(range_count)
+value_range[:-1]
+df_output = spark.createDataFrame(zip(value_range[:-1],range_count), schema=[&#39;bin&#39;, &#39;count&#39;])
+incorta.show(df_output)
+save(df_output)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/994c9db2af78b6cc.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/ad2985dd102ec21f.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/f7ec6deb320cfff4.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="查看 value_range 和 range_count" duration="0">
+        <p><code>len()</code></p>
+<p><code>list[start:end]</code></p>
+<p>利用 <code>len()</code> 函數分別查看 <code>value_range</code> 和 <code>range_count</code> 的長度，確認直方圖會有多少個區間，再利用 <code>value_range[:-1]</code> 查看每個區間的起始值為何</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+len(value_range), len(range_count)</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+value_range[:-1]</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/cd5dd995e5f2f6c8.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="製作 Histogram" duration="0">
+        <p><code>spark.createDataFrame()</code></p>
+<p>建立一個新的 Data Frame，命名為 df_output 為最後需要儲存的 data frame</p>
+<p>先是利用 <code>value_range[:-1]</code> 和 <code>range_count</code> 分別做成 column 為 <code>'bin'</code> 和  <code>'count'</code>，這是為了之後要製成 histogram 的必要步驟</p>
+<p>接下來因為大部分的 trip duration 資料都在一小時之內，因此我給他一個篩選條件，讓 bin 要小於等於 3600，最後得出我們想要的圖形</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+df_output = spark.createDataFrame(zip(value_range[:-1],range_count), schema=[&#39;bin&#39;, &#39;count&#39;])</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+df_output.columns</code></pre>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+df_output = df_output.filter(&#34;bin &lt;= 3600&#34;)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/3835fbe8098ffd2f.png"></p>
+<h2 is-upgraded><strong>比較有無filter</strong></h2>
+<p>在此我們可以比較一下，沒有加篩選條件和有加上篩選條件的結果分別會是長什麼樣子</p>
+<h3 is-upgraded>沒有加篩選條件</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/d1502f367915bf41.png"></p>
+<h3 is-upgraded>有加上篩選條件 filter(&#34;bin &lt;= 3600&#34;)</h3>
+<p class="image-container"><img style="width: 601.70px" src="img/3921bacc69164e67.png"></p>
+<p>因為我們想看的是大多數的資料分佈，由此看來，我們需要加上篩選條件，將視覺集中於圖形左半邊，才能更看清楚大部分資料的分佈情形，因此最終決定使用加上篩選的結果</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="查看結果" duration="0">
+        <p><code>incorta.show(df)</code></p>
+<p>在 Incorta Notebook 中，可以利用 incorta.show(df) 查看 data frame 的結果，也可以利用選單中的選項畫圖，以圖型的方式呈現出來，下面我們就是用 histogram 將資料呈現出來</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+incorta.show(df_output)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/7acf3c2d82bde2dc.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="儲存" duration="0">
+        <p><code>save(df)</code></p>
+<p>最後一個步驟，看似不起眼，卻是最重要的一個步驟，就是儲存</p>
+<p>利用 save 儲存 data frame，並且儲存成 MV，之後也可以利用 Incorta Dashboard 查看 </p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>%pyspark
+save(df_output)</code></pre>
+<p>記得要檢查需要儲存的 paragraph 要將綠色勾勾打勾✅ ，再點選 Done → Validate → Done → Save Changes → Load Table</p>
+<p class="image-container"><img style="width: 601.70px" src="img/374df442a3ddff55.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/7bd7df3eac98175e.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/43234345ec352300.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/bd8bb6182acab298.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/86ab93e593fa9651.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="在 Incorta  Dashboard 畫圖" duration="0">
+        <p>除了在 incorta notebook 可以畫圖外，也可以利用 Incorta  Dashboard 畫圖</p>
+<h2 is-upgraded><strong>Step 1 建立一個新的 dashboard</strong></h2>
+<p>Content → +New → Add Dashboard </p>
+<p class="image-container"><img style="width: 601.70px" src="img/9dd00144c9919181.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/524bb500dc639484.png"></p>
+<h2 is-upgraded><strong>Step 2 建立 Insight</strong></h2>
+<p><code>Add Insight → Column → Manage Dataset → Table → NYC_CitiBike → Duration_Histogram → x</code></p>
+<p>點進 Insight 後，將圖形改選成 Column，下一步要選取剛剛所建立的 MV 作為 dataset ，點選 Manage Dataset → Table → NYC_CitiBike（Schema） → Duration_Histogram (MV)，關閉 Manage Dataset</p>
+<p class="image-container"><img style="width: 601.70px" src="img/610031db7a612e3e.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/e357bbf912912caa.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/d0f84f5f6c58166e.png"></p>
+<h2 is-upgraded><strong>Step 3 將資料放入圖表</strong></h2>
+<p>將 Bin 拖入 GROUPING DIMENSION，Count 拖入 MEASURE，並點選圖形上方的 Click to Edit Insight Title 將圖表命名，最後點選右上角的 Save，即完成在 Incorta Dashboard 畫圖</p>
+<p class="image-container"><img style="width: 601.70px" src="img/169bad0e1442fdc3.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/a1f460915be8b38b.png"></p>
+<p>可以看到圖形結果和先前用 Incorta Notebook 畫出來的一樣，都是呈現右偏的圖形，因為圖形嚴重右偏的關係，我們之後想要分析 trip duration 時，可以利用<strong>中位數</strong>取代<strong>平均數</strong>，來看看不同站點之間的關係～</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

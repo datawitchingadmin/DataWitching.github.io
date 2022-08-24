@@ -1,0 +1,37 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-08-24T03:21:44Z",
+  "id": "Transition_from_SQL_to_PySpark",
+  "duration": 0,
+  "title": "Transition from SQL to PySpark",
+  "summary": "In this codelab, you'll be able to learn how to do transition from SQL to PySpark.",
+  "source": "11Xd-CRoItWcqbVMNcDiBBrzpYfNYSXekcilYvInUjX0",
+  "theme": "web",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "web"
+  ],
+  "tags": [
+    "cds17",
+    "chrome-dev-summit-2016",
+    "devfest18",
+    "gdd17",
+    "io2016",
+    "io2017",
+    "io2018",
+    "io2019",
+    "jsconfeu",
+    "kiosk",
+    "pwa-dev-summit",
+    "pwa-roadshow",
+    "tag-web",
+    "typtwd17",
+    "web"
+  ],
+  "url": "Transition_from_SQL_to_PySpark"
+}
