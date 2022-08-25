@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2022-08-25T03:39:54Z",
-  "id": "Transition_from_SQL_to_PySpark",
+  "updated": "2022-08-25T15:19:23Z",
+  "id": "Transition_from_SQL_to_PySpark_II",
   "duration": 0,
-  "title": "Transition from SQL to PySpark",
+  "title": "Transition from SQL to PySpark II",
   "summary": "In this codelab, you'll be able to learn how to do transition from SQL to PySpark.",
-  "source": "11Xd-CRoItWcqbVMNcDiBBrzpYfNYSXekcilYvInUjX0",
+  "source": "1mP4kc0m-bX1NT_bAvwrfPudY42o82jXhQIdD-M3SbRE",
   "theme": "web",
   "status": [
     "published"
@@ -33,5 +33,5 @@
     "typtwd17",
     "web"
   ],
-  "url": "Transition_from_SQL_to_PySpark"
+  "url": "Transition_from_SQL_to_PySpark_II"
 }
