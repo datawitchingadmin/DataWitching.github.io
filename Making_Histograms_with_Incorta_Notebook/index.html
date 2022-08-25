@@ -82,27 +82,17 @@ incorta.show(df_duration)</code></pre>
       <google-codelab-step label="製作 Histogram 區間" duration="0">
         <p><code>df.rdd.histogram</code></p>
 <p>利用 rdd.histogram 製作直方圖，找到 <strong>value range</strong> 和 <strong>range count</strong></p>
-<pre><code>[int(round(start+x*step)) for x in range(n)]</code></pre>
-<p>這個 code 可以用 python 產生出一個列表區間，不需要一個一個自己用手打</p>
-<h2 is-upgraded><strong>Example - for 迴圈</strong></h2>
-<p>從 0 開始，公差為 60，總共 60 個</p>
-<pre><code>x = [int(round(0+x*60)) for x in range(60)]</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/36696e80cca6f8a0.png"></p>
-<h2 is-upgraded><strong>Example - 一個一個手打</strong></h2>
-<pre><code>y = [0, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440, 1500, 1560, 1620, 1680, 1740, 1800, 1860, 1920, 1980, 2040, 2100, 2160, 2220, 2280, 2340, 2400, 2460, 2520, 2580, 2640, 2700, 2760, 2820, 2880, 2940, 3000, 3060, 3120, 3180, 3240, 3300, 3360, 3420, 3480, 3540]</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/22666c1f53f3e144.png"></p>
+<p><strong>value_range</strong> 所代表的是範圍的起始值，也是範圍的切點</p>
+<p><strong>range_count</strong> 代表的是每個範圍起始值一直到下一個 bar 的值中間所有的次數，也就是落在範圍內的次數</p>
+<h2 is-upgraded><strong>只給 bar 個數</strong></h2>
+<p><code>df_duration.rdd.map(lambda x: x[0])</code><strong><code>.histogram(n)</code></strong></p>
+<p>利用 <strong><code>.histogram(n)</code></strong> 可以指定 histogram 中的區間個數為 n 個</p>
 <h2 is-upgraded><strong>Example</strong></h2>
-<p>利用上方的 code 應用在 histogram 中，製作 histogram 級距為60秒，也就是1分鐘，並且最大值設為一星期的時間（60*60*24*7）</p>
-<p>若是要看 df.rdd 更多的使用方法，可以用 <code>help(df_duration.rdd)</code> 查看</p>
 <pre><code>%pyspark
-value_range, range_count = df_duration.rdd.map(lambda x: x[0]).histogram([int(round(0+x*60)) for x in range(60*24*7)])</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/1513c08851e4a876.png"></p>
-<h2 is-upgraded><strong>Reference</strong></h2>
-<p>python generate list interval：</p>
-<p><a href="https://www.codegrepper.com/code-examples/python/python+generate+list+interval" target="_blank">https://www.codegrepper.com/code-examples/python/python+generate+list+interval</a></p>
-<h2 is-upgraded><strong>Example - 若是不用 list interval</strong></h2>
-<p>這個例子和前一個例子最大的不同就是，histogram給的條件不一樣，前一個是給急遽為60秒，共一個星期10080個bar；而這一個例子只有給條件需要100個bar讓系統去切，但因為原本資料右偏的非常嚴重，導致切出來的數值，並不符合視覺直觀判斷（如下圖），因此才需要上面那個方法做histogram的級距</p>
-<pre><code>df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+value_range, range_count = df_duration.rdd.map(lambda x: x[0]).histogram(100)</code></pre>
+<p>完整的 code 和結果如下：</p>
+<pre><code>%pyspark
+df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
 df_duration = df.filter(&#34;tripduration is not null&#34;).select(&#34;tripduration&#34;)
 value_range, range_count = df_duration.rdd.map(lambda x: x[0]).histogram(100)
 len(value_range), len(range_count)
@@ -113,6 +103,44 @@ save(df_output)</code></pre>
 <p class="image-container"><img style="width: 601.70px" src="img/994c9db2af78b6cc.png"></p>
 <p class="image-container"><img style="width: 601.70px" src="img/ad2985dd102ec21f.png"></p>
 <p class="image-container"><img style="width: 601.70px" src="img/f7ec6deb320cfff4.png"></p>
+<p>這一個例子只有給條件需要100個bar讓系統去切，但因為原本資料右偏的非常嚴重，導致切出來的數值，並不符合視覺直觀判斷（如上圖），因此我們需要找別的方法來處理這筆資料</p>
+<h2 is-upgraded><strong>自定義區間</strong></h2>
+<p>自定義 histogram 的區間範圍，可以解決上述問題，我們需要直接給 histogram() 需要的範圍切點，如下範例：</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>直接將所需的區間範圍一個一個打出來</p>
+<pre><code>y = [0, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440, 1500, 1560, 1620, 1680, 1740, 1800, 1860, 1920, 1980, 2040, 2100, 2160, 2220, 2280, 2340, 2400, 2460, 2520, 2580, 2640, 2700, 2760, 2820, 2880, 2940, 3000, 3060, 3120, 3180, 3240, 3300, 3360, 3420, 3480, 3540]</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/22666c1f53f3e144.png"></p>
+<p>完整的 code 和結果：</p>
+<pre><code>%pyspark
+df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df_duration = df.filter(&#34;tripduration is not null&#34;).select(&#34;tripduration&#34;)
+value_range, range_count = df_duration.rdd.map(lambda x: x[0]).histogram([0, 60, 120, 180, 240, 300, 360, 420, 480, 540, 600, 660, 720, 780, 840, 900, 960, 1020, 1080, 1140, 1200, 1260, 1320, 1380, 1440, 1500, 1560, 1620, 1680, 1740, 1800, 1860, 1920, 1980, 2040, 2100, 2160, 2220, 2280, 2340, 2400, 2460, 2520, 2580, 2640, 2700, 2760, 2820, 2880, 2940, 3000, 3060, 3120, 3180, 3240, 3300, 3360, 3420, 3480, 3540])
+len(value_range), len(range_count)
+value_range[:-1]
+df_output = spark.createDataFrame(zip(value_range[:-1],range_count), schema=[&#39;bin&#39;, &#39;count&#39;])
+incorta.show(df_output)
+save(df_output)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/5554939efcbe295c.png"></p>
+<h2 is-upgraded><strong>for 迴圈</strong></h2>
+<p>但是上述方法僅適用於範圍個數數量不多時使用，否則要花太多時間打重複的東西，這時就可以運用 for 迴圈，將所需範圍列出</p>
+<p><code>[int(round(start+x*step)) for x in range(n)]</code></p>
+<p>這個 code 可以用 python 產生出一個列表區間，不需要一個一個自己用手打</p>
+<h2 is-upgraded><strong>Example - for 迴圈</strong></h2>
+<p>從 0 開始，公差為 60，總共 60 個</p>
+<pre><code>x = [int(round(0+x*60)) for x in range(60)]</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/36696e80cca6f8a0.png"></p>
+<p>看結果可以發現，這裡所製造出的 x 列表和剛剛一個一個手打的列表 y 完全相同，因此可以直接取代手打</p>
+<h3 is-upgraded>Reference</h3>
+<p>python generate list interval：</p>
+<p><a href="https://www.codegrepper.com/code-examples/python/python+generate+list+interval" target="_blank">https://www.codegrepper.com/code-examples/python/python+generate+list+interval</a></p>
+<h2 is-upgraded><strong>Example - 最終code</strong></h2>
+<p>最終決定利用上方的 code 應用在 histogram 中，製作 histogram 級距為60秒，也就是1分鐘，並且最大值設為一星期的時間（60*60*24*7）</p>
+<p>另外，若是要看 df.rdd 更多的使用方法，可以用 <code>help(df_duration.rdd)</code> 查看</p>
+<pre><code>%pyspark
+value_range, range_count = df_duration.rdd.map(lambda x: x[0]).histogram([int(round(0+x*60)) for x in range(60*24*7)])</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/1513c08851e4a876.png"></p>
+<p>因為原本資料右偏的非常嚴重，導致切出來的數值，並不符合視覺直觀判斷，因此才需要上面這一個方法做histogram的級距</p>
+<p>這個例子和前述個例子最大的不同就是，histogram給的條件不一樣，這一個是給級距為60秒，共一個星期10080個bar；而前一個例子只有給條件需要100個bar讓系統去切</p>
 
 
       </google-codelab-step>
@@ -120,14 +148,14 @@ save(df_output)</code></pre>
       <google-codelab-step label="查看 value_range 和 range_count" duration="0">
         <p><code>len()</code></p>
 <p><code>list[start:end]</code></p>
-<p>利用 <code>len()</code> 函數分別查看 <code>value_range</code> 和 <code>range_count</code> 的長度，確認直方圖會有多少個區間，再利用 <code>value_range[:-1]</code> 查看每個區間的起始值為何</p>
+<p>利用 <code>len()</code> 函數分別查看 <strong>value_range</strong> 和 <strong>range_count</strong> 的長度，確認直方圖會有多少個區間，再利用 <code>value_range[:-1]</code> 查看每個區間的起始值為何</p>
+<p><strong>value_range</strong>範圍要 -1 是因為 <strong>value_range</strong> 和 <strong>range_count</strong> 長度不一樣，減掉最後一個數值後，<strong>value_range</strong> 所代表的是範圍的起始值，<strong>range_count</strong> 代表的是每個範圍起始值一直到下一個 bar 的值中間所有的次數，例如：<code>value_range = [0,60,120] ；range_count = [0,720319,1847229]</code>  所代表的意思是 tripduration 介於 0~60 秒之間的資料有 0 筆，tripduration 介於 60~120 秒之間的資料有 720319 筆，tripduration 介於 120~180 秒之間的資料有 1847229 筆</p>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>%pyspark
 len(value_range), len(range_count)</code></pre>
-<h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>%pyspark
 value_range[:-1]</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/cd5dd995e5f2f6c8.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/9a70bc6c57ace331.png"></p>
 
 
       </google-codelab-step>
@@ -172,7 +200,7 @@ incorta.show(df_output)</code></pre>
       <google-codelab-step label="儲存" duration="0">
         <p><code>save(df)</code></p>
 <p>最後一個步驟，看似不起眼，卻是最重要的一個步驟，就是儲存</p>
-<p>利用 save 儲存 data frame，並且儲存成 MV，之後也可以利用 Incorta Dashboard 查看 </p>
+<p>利用 save 儲存 data frame，並且儲存成 MV，之後也可以利用 Incorta Dashboard 查看，下一頁會有範例示範</p>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>%pyspark
 save(df_output)</code></pre>

@@ -65,13 +65,65 @@ df1 = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)</code></pre>
 <pre><code>%pyspark
 df1.createOrReplaceTempView(&#34;DATE_H_VIEW&#34;)</code></pre>
 <p class="image-container"><img style="width: 601.70px" src="img/87eba401075e308a.png"></p>
+<p>之所以要建立成檢視表，是因為在後面 spark.sql 中可以使用，如同 SQL 中的 table，但 Temp View 僅僅是暫時的，運算完 spark.sql 後還是要存成 data frame</p>
+<p>運算過後的檢視表儲存成的 data frame 也可以再建立成另一個新的檢視表，再做 spark.sql 運算</p>
+<p>此步驟可以重複很多次，有點類似 SQL 中的 nested query ，可以成為連續的網絡 nested structure，一個接著一個</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>這個例子就是運用建立多次的 Temp View 在 spark.sql() 中完成 JOIN 運算</p>
+<p>此運算的結果是將兩個 view 結合起來，查看租借自行車的人，從A站到B站的平均使用時間，和從B站到A站的平均使用時間，是多長時間，是否有差異，進而進行分析</p>
+<pre><code>%pyspark
+df1 = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df1.createOrReplaceTempView(&#34;DATE_H_1&#34;)
+df_2 = spark.sql(&#34;&#34;&#34;
+SELECT  start_station_id first_station_id, start_station_name first_station_name, end_station_id second_station_id, end_station_name second_station_name,
+        AVG(tripduration) avg_by_first_to_second_station
+FROM DATE_H_1
+WHERE start_station_id &lt;= end_station_id
+GROUP BY start_station_id, start_station_name, end_station_id, end_station_name
+&#34;&#34;&#34;)
+df_2.createOrReplaceTempView(&#34;first_to_second&#34;)
+incorta.show(df_2)</code></pre>
+<pre><code>%pyspark
+df3 = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df3.createOrReplaceTempView(&#34;DATE_H_2&#34;)
+df_4 = spark.sql(&#34;&#34;&#34;
+SELECT  start_station_id second_station_id, start_station_name second_station_name, end_station_id first_station_id, end_station_name first_station_name,
+        AVG(tripduration) avg_by_second_to_first_station
+FROM DATE_H_2
+WHERE start_station_id &gt; end_station_id
+GROUP BY start_station_id, start_station_name, end_station_id, end_station_name
+&#34;&#34;&#34;)
+df_4.createOrReplaceTempView(&#34;second_to_first&#34;)
+incorta.show(df_4)</code></pre>
+<pre><code>%pyspark
+df_5 = spark.sql(&#34;&#34;&#34;
+SELECT  first_to_second.first_station_id, 
+        first_to_second.first_station_name, 
+        first_to_second.second_station_id, 
+        first_to_second.second_station_name, 
+        first_to_second.avg_by_first_to_second_station, 
+        second_to_first.avg_by_second_to_first_station
+FROM first_to_second
+INNER JOIN second_to_first
+ON first_to_second.first_station_id = second_to_first.first_station_id 
+AND first_to_second.second_station_id = second_to_first.second_station_id
+ORDER BY first_to_second.avg_by_first_to_second_station
+&#34;&#34;&#34;)
+save(df_5)
+incorta.show(df_5)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/ebb60e3562ef8107.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/e6eb2fe5d0e0959.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/f164d7ca6ca19578.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/e73e16e996f637f7.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/e4cbfb69057c6862.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/c1a9e891e598c6da.png"></p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="spark.sql" duration="0">
         <p><code>spark.sql("""</code></p>
-<p><code>SELECT .. FROM table </code></p>
+<p><code>SELECT .. FROM view </code></p>
 <p><code>""")</code></p>
 <p>要用 PySpark 寫 SQL 時，要用 <code>spark.sql</code> 指令，雙引號內即可寫 SQL code</p>
 <p>創建另一個新的 df</p>
@@ -89,18 +141,6 @@ GROUP BY start_station_id, start_station_name, end_station_id, end_station_name
 <p class="image-container"><img style="width: 601.70px" src="img/f3cd41a710ceba73.png"></p>
 <h2 is-upgraded><strong>為什麼要這樣做呢？</strong></h2>
 <p>我們之所以要利用 pyspark 來做 SQL 運算是因為，若是先學習如何使用SQL做資料處理的話，有些人比較習慣 SQL 的思考邏輯，因此喜歡用 SQL 來做，但是用spark.sql又可以利用一些pyspark 的功能做其他的運算，因此用 spark.sql</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="save" duration="0">
-        <p><code>save(df)</code></p>
-<p>每當寫完 pyspark code 時，必須要用 save(df) 指令儲存結果</p>
-<aside class="special"><p><strong>TIP: </strong>PySpark 一定會是開始於 read ，結束於 save</p>
-</aside>
-<h2 is-upgraded><strong>Example</strong></h2>
-<pre><code>save(df_2)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/3af68a3bd73bfa7d.png"></p>
 
 
       </google-codelab-step>
@@ -142,7 +182,19 @@ incorta.show(df_2)</code></pre>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>%pyspark
 df_5.count()</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/1c086a1804a54b90.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/1351014d1bd5f6fb.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="save" duration="0">
+        <p><code>save(df)</code></p>
+<p>每當寫完 pyspark code 時，必須要用 save(df) 指令儲存結果</p>
+<aside class="special"><p><strong>TIP: </strong>PySpark 一定會是開始於 read() ，結束於 save()</p>
+</aside>
+<h2 is-upgraded><strong>Example</strong></h2>
+<pre><code>save(df_2)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/915e2b837ce0aa4f.png"></p>
 
 
       </google-codelab-step>
