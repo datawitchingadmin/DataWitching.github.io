@@ -30,6 +30,7 @@
       <google-codelab-step label="Summary" duration="0">
         <p>這篇 Codelab 主要要比較三種不同語法之間的差異，分別是 <strong>SQL</strong> 、pyspark 中的 <strong>spark.sql()</strong> 和 <strong>PySpark</strong> 的方法，要運算出需要的分析結果，可以同時用三種不一樣的方法進行，後面會以同一個例子，用三種方法運算一遍，可以發現三種方法相異和相同之處</p>
 <p>在 spark.sql() 中的函數，基本上和 SQL 一模一樣，因此在介紹函數時，主要以 <strong>SQL</strong> 和 <strong>PySpark</strong> 為比較重點，最後會再比較三種方法的完整寫法</p>
+<p class="image-container"><img style="width: 601.70px" src="img/fa4e5a2203b6b9c6.png"></p>
 
 
       </google-codelab-step>
@@ -69,6 +70,36 @@ df.count()</code></pre>
 
       </google-codelab-step>
     
+      <google-codelab-step label="DISTINCT  vs  distinct(), dropDuplicates()" duration="0">
+        <p>在 <strong>SQL</strong> 中，DISTINCT 是用來找出有多少列<strong>不同</strong>的資料，在 DISTINCT 後面加上欄位，及找出指定欄位的<strong>不同</strong>資料</p>
+<p>在 <strong>PySpark</strong> 中，distinct() 也是用來計算有多少列<strong>不同</strong>的資料，但是 distinct() 只能用在比較所有的欄位時使用，而 dropDuplicates() 則是可以用來計算<strong>指定欄位</strong>有多少<strong>不同</strong>的資料</p>
+<h2 is-upgraded><strong>Example - 單一欄位 - SQL</strong></h2>
+<pre><code>%sql
+SELECT COUNT(DISTINCT start_station_id)
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/15a73eea29741976.png"></p>
+<h2 is-upgraded><strong>Example - 單一欄位 - PySpark</strong></h2>
+<pre><code>%pyspark
+df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df1 = df.dropDuplicates([&#34;start_station_id&#34;]).count()
+incorta.show(df1)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/8052bdf0279bf8c5.png"></p>
+<h2 is-upgraded><strong>Example - 多欄位 - SQL</strong></h2>
+<pre><code>%sql
+SELECT COUNT(DISTINCT start_station_id, end_station_id)
+FROM NYC_CitiBike.DATE_HANDLIN</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/cd6d8fd7f3c51672.png"></p>
+<h2 is-upgraded><strong>Example - 多欄位 - PySpark</strong></h2>
+<pre><code>%pyspark
+df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df1 = df.dropDuplicates([&#34;start_station_id&#34;,&#34;end_station_id&#34;]).count()
+incorta.show(df1)
+</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/d52c664add8b6f62.png"></p>
+
+
+      </google-codelab-step>
+    
       <google-codelab-step label="WHERE vs filter()" duration="0">
         <p>在 <strong>SQL</strong> 中，WHERE 是用來篩選特定條下的資料</p>
 <p>在 <strong>PySpark</strong> 中，filter() 也是用來篩選特定條下的資料</p>
@@ -96,14 +127,14 @@ incorta.show(df)</code></pre>
         <p>在 <strong>SQL</strong> 中，GROUP BY 是搭配 aggregation function（聚合函數）使用，是用來將查詢結果中特定欄位值相同的資料分為若干個群組，而每一個群組都會傳回一個資料列</p>
 <p>在 <strong>PySpark</strong> 中，groupBy() 也是一樣的，搭配 aggregation function（聚合函數）使用，是用來將查詢結果中特定欄位值相同的資料分為若干個群組，而每一個群組都會傳回一個資料列</p>
 <p>常見的 aggregation function（聚合函數）有：avg()、count()、max()、min()、sum() 、mean()、... 等</p>
-<h2 is-upgraded><strong>Example - SQL</strong></h2>
+<h2 is-upgraded><strong>Example - 單一聚合函數 - SQL</strong></h2>
 <pre><code>%sql
 SELECT  start_station_id, start_station_name, end_station_id, end_station_name, AVG(tripduration)
 FROM NYC_CitiBike.DATE_HANDLING
 WHERE start_station_id &lt;= end_station_id
 GROUP BY start_station_id, start_station_name, end_station_id, end_station_name</code></pre>
 <p class="image-container"><img style="width: 601.70px" src="img/f301ff2f328806a2.png"></p>
-<h2 is-upgraded><strong>Example - PySpark</strong></h2>
+<h2 is-upgraded><strong>Example - 單一聚合函數 - PySpark</strong></h2>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
 df1 = df.filter(&#34;start_station_id &lt;= end_station_id&#34;)
@@ -111,6 +142,26 @@ df1 = df1.groupBy(&#34;start_station_id&#34;, &#34;start_station_name&#34;, &#34
 save(df1)
 incorta.show(df1)</code></pre>
 <p class="image-container"><img style="width: 601.70px" src="img/3e9694393798a30a.png"></p>
+<h2 is-upgraded><strong>Example - 多聚合函數 - SQL</strong></h2>
+<pre><code>%sql
+SELECT  start_station_id, start_station_name, end_station_id, end_station_name, 
+        AVG(tripduration), SUM(tripduration), COUNT(tripduration)
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE start_station_id &lt;= end_station_id
+GROUP BY start_station_id, start_station_name, end_station_id, end_station_name</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/683443e818ed4a7f.png"></p>
+<h2 is-upgraded><strong>Example1 - 多聚合函數 - PySpark</strong></h2>
+<pre><code>%pyspark
+import pyspark.sql.functions as F
+df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df1 = df.filter(&#34;start_station_id &lt;= end_station_id&#34;)
+df1 = df1.groupBy(&#34;start_station_id&#34;, &#34;start_station_name&#34;, &#34;end_station_id&#34;, &#34;end_station_name&#34;)\
+         .agg(F.avg(&#34;tripduration&#34;),
+              F.sum(&#34;tripduration&#34;),
+              F.count(&#34;tripduration&#34;)
+              )
+incorta.show(df1)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/3b58aaff9c8e0418.png"></p>
 
 
       </google-codelab-step>

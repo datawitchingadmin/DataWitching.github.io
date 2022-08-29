@@ -22,7 +22,7 @@
 <body>
   <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
   <google-codelab codelab-gaid=""
-                  id="Basic SQL"
+                  id="Basic_SQL"
                   title="Basic SQL"
                   environment="web"
                   feedback-link="">
@@ -46,9 +46,9 @@
     
       <google-codelab-step label="開啟 Incorta Notebook" duration="0">
         <p>Schema →  +New →  Material View →  Choose Language →  Edit in Notebook</p>
-<p class="image-container"><img style="width: 601.70px" src="img/935b6c3ec7f0144d.png"></p>
-<p class="image-container"><img style="width: 601.70px" src="img/e4cb505d2da8c7d7.png"></p>
-<p class="image-container"><img style="width: 601.70px" src="img/89348b90ad7010e8.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/356270076d4905cd.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/238a6342279c10c4.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/16a1d753f747f473.png"></p>
 
 
       </google-codelab-step>
@@ -60,8 +60,8 @@
 <pre><code>SELECT * FROM NYC_CitiBike.tripdata </code></pre>
 <aside class="special"><p><strong>TIP: </strong>快捷鍵：shift + Enter →  Run Paragraph</p>
 </aside>
-<p class="image-container"><img style="width: 601.70px" src="img/4b96f0764ab8f3ad.png"></p>
-<p class="image-container"><img style="width: 601.70px" src="img/15c1ce733d5ee226.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/637813aa1364c09a.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/40348379709d3a96.png"></p>
 
 
       </google-codelab-step>
@@ -71,7 +71,7 @@
 <p>僅查看 n 筆資料，可以減少系統的運算時間</p>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>SELECT * FROM NYC_CitiBike.tripdata LIMIT 10 </code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/233cc1f74c372317.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/5e318255f894a24f.png"></p>
 
 
       </google-codelab-step>
@@ -81,7 +81,7 @@
 <p>查看 column name 或是 data type，藉由查看資料結構，可以大概了解資料型態，並且對於後續分析也有些幫助。</p>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>DESC NYC_CitiBike.tripdata</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/1b595aff5be062f2.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/a23ec357905ead68.png"></p>
 
 
       </google-codelab-step>
@@ -92,11 +92,11 @@
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>SELECT start_station_name, end_station_name 
 FROM NYC_CitiBike.tripdata</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/b78cebefed44a2f1.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/1ed46e7b273f7e7.png"></p>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>SELECT starttime, stoptime, tripduration
 FROM NYC_CitiBike.tripdata</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/d324a45c36256867.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/9cbb9312e369e373.png"></p>
 
 
       </google-codelab-step>
@@ -112,14 +112,24 @@ FROM NYC_CitiBike.tripdata</code></pre>
 <pre><code>SELECT starttime, stoptime 
 FROM NYC_CitiBike.tripdata 
 order by 1, 2</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/69cea178f8952afb.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/35dfeb5180aaccd3.png"></p>
+<h2 is-upgraded><strong>Example - 由小到大</strong></h2>
+<pre><code>SELECT tripduration 
+FROM NYC_CitiBike.tripdata 
+order by tripduration</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/4aa836f8ab6accbd.png"></p>
+<h2 is-upgraded> <strong>Example</strong> - 由大到小</h2>
+<pre><code>SELECT tripduration 
+FROM NYC_CitiBike.tripdata 
+order by tripduration DESC</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/110954817c73a38c.png"></p>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>SELECT DISTINCT start_station_name, end_station_name, COUNT(*) 
 FROM NYC_CitiBike.tripdata 
 where start_station_name is not null
 GROUP BY start_station_name, end_station_name
 ORDER BY COUNT(*) DESC</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/60287e6e7176de80.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/1d0bac1bd8088210.png"></p>
 
 
       </google-codelab-step>
@@ -132,7 +142,7 @@ ORDER BY COUNT(*) DESC</code></pre>
 FROM NYC_CitiBike.tripdata 
 where start_station_name is not null
 ORDER 1,2</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/75a78f575c68ef5d.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/5117944393c946db.png"></p>
 
 
       </google-codelab-step>
@@ -145,7 +155,7 @@ ORDER 1,2</code></pre>
 FROM NYC_CitiBike.tripdata 
 where start_station_name is not null
 ORDER BY 1,2</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/743b922ef249dbcb.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/996e550a22be26a.png"></p>
 
 
       </google-codelab-step>
@@ -155,27 +165,31 @@ ORDER BY 1,2</code></pre>
 <p>可以利用 COUNT( ) 計算次數，算出所需資料的筆數，搭配 DISTINCT 還可以計算有多少不同的分類或是種類等等</p>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>SELECT COUNT(*) FROM NYC_CitiBike.tripdata</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/6df4d5cfb89e7b0d.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/ae46b635e6898050.png"></p>
+<h2 is-upgraded><strong>Example - DSTINCT COUNT</strong></h2>
+<pre><code>SELECT COUNT(DISTINCT start_station_id) 
+FROM NYC_CitiBike.tripdata</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/d03b66e5ed6d4d5a.png"></p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="分類 - GROUP BY" duration="0">
         <p><code>GROUP BY</code></p>
-<p>當有任何 <code>aggregation column</code> 時，必須要用 <code>GROUP BY</code> ，除了<code>aggregation column</code> 其他 column 都要放進 <code>GROUP BY</code></p>
+<p>當有任何 <code>aggregation column</code> (聚合函數)時，必須要用 <code>GROUP BY</code> ，除了<code>aggregation column</code> 其他 column 都要放進 <code>GROUP BY</code></p>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>SELECT DISTINCT start_station_name, end_station_name, COUNT(*) 
 FROM NYC_CitiBike.tripdata 
 where start_station_name is not null
 GROUP BY start_station_name, end_station_name</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/dfaad89c0482b1a0.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/da789842af581406.png"></p>
 <h2 is-upgraded><strong>Example</strong></h2>
 <pre><code>SELECT DISTINCT start_station_name, end_station_name, COUNT(*) 
 FROM NYC_CitiBike.tripdata 
 where start_station_name is not null
 GROUP BY start_station_name, end_station_name
 ORDER BY COUNT(*) DESC</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/60287e6e7176de80.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/1d0bac1bd8088210.png"></p>
 
 
       </google-codelab-step>

@@ -3,8 +3,8 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2022-08-01T05:00:03Z",
-  "id": "Basic SQL",
+  "updated": "2022-08-29T10:27:45Z",
+  "id": "Basic_SQL",
   "duration": 0,
   "title": "Basic SQL",
   "summary": "In this codelab, you'll learn some basic SQL.",
@@ -33,5 +33,5 @@
     "typtwd17",
     "web"
   ],
-  "url": "Basic SQL"
+  "url": "Basic_SQL"
 }
