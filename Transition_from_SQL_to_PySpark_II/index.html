@@ -60,7 +60,7 @@ incorta.show(df)</code></pre>
 <h2 is-upgraded><strong>Example - SQL</strong></h2>
 <pre><code>%sql
 SELECT COUNT(*) FROM NYC_CitiBike.DATE_HANDLING</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/40f477d31a5e7ced.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/a2509186097723d.png"></p>
 <h2 is-upgraded><strong>Example - PySpark</strong></h2>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
@@ -149,7 +149,7 @@ SELECT  start_station_id, start_station_name, end_station_id, end_station_name,
 FROM NYC_CitiBike.DATE_HANDLING
 WHERE start_station_id &lt;= end_station_id
 GROUP BY start_station_id, start_station_name, end_station_id, end_station_name</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/683443e818ed4a7f.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/1c250814e400a8f2.png"></p>
 <h2 is-upgraded><strong>Example1 - 多聚合函數 - PySpark</strong></h2>
 <pre><code>%pyspark
 import pyspark.sql.functions as F
@@ -190,6 +190,34 @@ incorta.show(df1)</code></pre>
 
       </google-codelab-step>
     
+      <google-codelab-step label="HAVING vs filter()" duration="0">
+        <p>在 <strong>SQL</strong> 中，HAVING 是aggregate filter，用來篩選聚合函數所計算後的特定條下資料</p>
+<p>在 <strong>PySpark</strong> 中，filter() 也是用來篩選特定條下的資料</p>
+<p>但是在 <strong>SQL</strong> 中有固定的語序， SELECT → FROM → WHERE → GROUP BY →</p>
+<p>HAVING → ORDER BY</p>
+<p>在<strong>PySpark</strong> 中，語序可以自訂，因此只要利用 groupBy 計算後，再用 filter() 或 where() 篩選，即可得到同樣的結果</p>
+<h2 is-upgraded><strong>Example - SQL</strong></h2>
+<pre><code>%sql
+SELECT start_station_id, COUNT(*) start_station_count
+FROM NYC_CitiBike.DATE_HANDLING
+GROUP BY start_station_id
+HAVING COUNT(*) &gt; 100</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/9a8d840ce185b614.png"></p>
+<h2 is-upgraded><strong>Example - PySpark</strong></h2>
+<pre><code>%pyspark
+df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df1 = df.groupBy(&#34;start_station_id&#34;).count().filter(&#34;count &gt; 100&#34;)
+save(df1)
+incorta.show(df1)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/b783a139e1066a76.png"></p>
+<aside class="special"><p><strong>NOTE : </strong></p>
+<p><strong>在 PySpark 中，若是先用 filter() 再使用 groupBy() 相當於 SQL 中的 WHERE ；</strong></p>
+<p><strong>但若先用 groupBy() 再使用 filter() 就是相當於 SQL 中的 HAVING</strong></p>
+</aside>
+
+
+      </google-codelab-step>
+    
       <google-codelab-step label="Alias" duration="0">
         <p>在 <strong>SQL</strong> 中，alias 可以在要重新命名的欄位後方加上 as [新的名字] 或是直接在要重新命名的欄位後方加上 [新的名字] </p>
 <p>在 <strong>PySpark</strong> 中，withColumnRenamed() 是用來重新命名的函數</p>
@@ -201,7 +229,7 @@ FROM NYC_CitiBike.DATE_HANDLING
 WHERE start_station_id &lt;= end_station_id
 GROUP BY start_station_id, start_station_name, end_station_id, end_station_name
 ORDER BY start_station_id, end_station_id</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/888fc4bfd87e63d7.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/858e3691ddd346d2.png"></p>
 <h2 is-upgraded><strong>Example - PySpark</strong></h2>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
@@ -254,7 +282,7 @@ ORDER BY start_station_id, end_station_id
 df_2.createOrReplaceTempView(&#34;first_to_second&#34;)
 incorta.show(df_2)</code></pre>
 <p class="image-container"><img style="width: 601.70px" src="img/68c35566fe735f95.png"></p>
-<p class="image-container"><img style="width: 601.70px" src="img/6ef387bf17131f2e.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/8effbe1fda08912f.png"></p>
 
 
       </google-codelab-step>
@@ -274,7 +302,7 @@ df3 = df.filter(&#34;start_station_id &lt;= end_station_id&#34;)\
         .sort(&#34;start_station_id&#34;, &#34;end_station_id&#34;)
 save(df3)
 incorta.show(df3)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/f474d3470d9ea85c.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/13604c04c23511f4.png"></p>
 <p class="image-container"><img style="width: 601.70px" src="img/3b230837e679218e.png"></p>
 
 
