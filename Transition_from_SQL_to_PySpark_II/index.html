@@ -30,7 +30,7 @@
       <google-codelab-step label="Summary" duration="0">
         <p>這篇 Codelab 主要要比較三種不同語法之間的差異，分別是 <strong>SQL</strong> 、pyspark 中的 <strong>spark.sql()</strong> 和 <strong>PySpark</strong> 的方法，要運算出需要的分析結果，可以同時用三種不一樣的方法進行，後面會以同一個例子，用三種方法運算一遍，可以發現三種方法相異和相同之處</p>
 <p>在 spark.sql() 中的函數，基本上和 SQL 一模一樣，因此在介紹函數時，主要以 <strong>SQL</strong> 和 <strong>PySpark</strong> 為比較重點，最後會再比較三種方法的完整寫法</p>
-<p class="image-container"><img style="width: 601.70px" src="img/fa4e5a2203b6b9c6.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/d65389fed999fc15.png"></p>
 
 
       </google-codelab-step>
@@ -42,14 +42,14 @@
 <pre><code>%sql
 SELECT start_station_id, start_station_name, end_station_id, end_station_name
 FROM NYC_CitiBike.DATE_HANDLING</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/cdeb0f61cd0c279f.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/3a337c2b834b3f7b.png"></p>
 <h2 is-upgraded><strong>Example - PySpark</strong></h2>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
 df = df.select(&#34;start_station_id&#34;, &#34;start_station_name&#34;, &#34;end_station_id&#34;, &#34;end_station_name&#34;)
 save(df)
 incorta.show(df)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/f694f4c0c0b77fb6.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/f4a299528b9df0fe.png"></p>
 
 
       </google-codelab-step>
@@ -65,7 +65,7 @@ SELECT COUNT(*) FROM NYC_CitiBike.DATE_HANDLING</code></pre>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
 df.count()</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/73b74aa525af6d69.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/16d91daf4bdb7e25.png"></p>
 
 
       </google-codelab-step>
@@ -77,25 +77,24 @@ df.count()</code></pre>
 <pre><code>%sql
 SELECT COUNT(DISTINCT start_station_id)
 FROM NYC_CitiBike.DATE_HANDLING</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/15a73eea29741976.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/c8f7eead8d9bb509.png"></p>
 <h2 is-upgraded><strong>Example - 單一欄位 - PySpark</strong></h2>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
 df1 = df.dropDuplicates([&#34;start_station_id&#34;]).count()
 incorta.show(df1)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/8052bdf0279bf8c5.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/22ba2c62feaedc11.png"></p>
 <h2 is-upgraded><strong>Example - 多欄位 - SQL</strong></h2>
 <pre><code>%sql
 SELECT COUNT(DISTINCT start_station_id, end_station_id)
-FROM NYC_CitiBike.DATE_HANDLIN</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/cd6d8fd7f3c51672.png"></p>
+FROM NYC_CitiBike.DATE_HANDLING</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/7a8b3d9cb0c6e46f.png"></p>
 <h2 is-upgraded><strong>Example - 多欄位 - PySpark</strong></h2>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
 df1 = df.dropDuplicates([&#34;start_station_id&#34;,&#34;end_station_id&#34;]).count()
-incorta.show(df1)
-</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/d52c664add8b6f62.png"></p>
+incorta.show(df1)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/c6ac6129982d90c8.png"></p>
 
 
       </google-codelab-step>
@@ -110,7 +109,7 @@ incorta.show(df1)
 SELECT  start_station_id, start_station_name, end_station_id, end_station_name
 FROM NYC_CitiBike.DATE_HANDLING
 WHERE start_station_id &lt;= end_station_id</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/2299a3b311940800.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/6b042dcc65327d1a.png"></p>
 <h2 is-upgraded><strong>Example - PySpark</strong></h2>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
@@ -118,7 +117,7 @@ df = df.select(&#34;start_station_id&#34;, &#34;start_station_name&#34;, &#34;en
 df = df.filter(&#34;start_station_id &lt;= end_station_id&#34;)
 save(df)
 incorta.show(df)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/f451529f91c83784.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/d11391e2f8fb0d63.png"></p>
 
 
       </google-codelab-step>
@@ -133,7 +132,7 @@ SELECT  start_station_id, start_station_name, end_station_id, end_station_name, 
 FROM NYC_CitiBike.DATE_HANDLING
 WHERE start_station_id &lt;= end_station_id
 GROUP BY start_station_id, start_station_name, end_station_id, end_station_name</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/f301ff2f328806a2.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/d94aed00872967dd.png"></p>
 <h2 is-upgraded><strong>Example - 單一聚合函數 - PySpark</strong></h2>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
@@ -141,7 +140,7 @@ df1 = df.filter(&#34;start_station_id &lt;= end_station_id&#34;)
 df1 = df1.groupBy(&#34;start_station_id&#34;, &#34;start_station_name&#34;, &#34;end_station_id&#34;, &#34;end_station_name&#34;).avg(&#34;tripduration&#34;)
 save(df1)
 incorta.show(df1)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/3e9694393798a30a.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/333ccac7f2b94056.png"></p>
 <h2 is-upgraded><strong>Example - 多聚合函數 - SQL</strong></h2>
 <pre><code>%sql
 SELECT  start_station_id, start_station_name, end_station_id, end_station_name, 
@@ -161,7 +160,7 @@ df1 = df1.groupBy(&#34;start_station_id&#34;, &#34;start_station_name&#34;, &#34
               F.count(&#34;tripduration&#34;)
               )
 incorta.show(df1)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/3b58aaff9c8e0418.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/2bd5bc97391b3b1.png"></p>
 
 
       </google-codelab-step>
@@ -176,7 +175,7 @@ FROM NYC_CitiBike.DATE_HANDLING
 WHERE start_station_id &lt;= end_station_id
 GROUP BY start_station_id, start_station_name, end_station_id, end_station_name
 ORDER BY start_station_id, end_station_id</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/20863b12df83be76.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/8f474a1e5b39dbb3.png"></p>
 <h2 is-upgraded><strong>Example - PySpark</strong></h2>
 <pre><code>%pyspark
 df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
@@ -185,7 +184,7 @@ df1 = df1.groupBy(&#34;start_station_id&#34;, &#34;start_station_name&#34;, &#34
 df1 = df1.sort(&#34;start_station_id&#34;, &#34;end_station_id&#34;)
 save(df1)
 incorta.show(df1)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/50b8f27abe1df322.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/7c0085b072e56ac0.png"></p>
 
 
       </google-codelab-step>
@@ -243,7 +242,7 @@ df1 = df1.withColumnRenamed(&#34;start_station_id&#34;, &#34;first_station_id&#3
          .sort(&#34;start_station_id&#34;, &#34;end_station_id&#34;)
 save(df1)
 incorta.show(df1)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/7bf844d0002d3f97.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/d066c39d39ca57c4.png"></p>
 <aside class="special"><p><strong>TIP: </strong>在這個例子可以發現，PySpark 可以一次下很多個指令，用 <code>.</code> 連接，若是指令太長，也可以利用 <code>\</code> 加在一行的最後，再換行即可連續下指令</p>
 </aside>
 
@@ -260,7 +259,7 @@ FROM NYC_CitiBike.DATE_HANDLING
 WHERE start_station_id &lt;= end_station_id
 GROUP BY start_station_id, start_station_name, end_station_id, end_station_name
 ORDER BY start_station_id, end_station_id</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/48a08b3f6e65fe8.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/1d3cb90d1d0b0da5.png"></p>
 
 
       </google-codelab-step>
@@ -271,7 +270,7 @@ ORDER BY start_station_id, end_station_id</code></pre>
 <pre><code>%pyspark
 df1 = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
 df1.createOrReplaceTempView(&#34;DATE_H_1&#34;)
-df_2 = spark.sql(&#34;&#34;&#34;
+df2 = spark.sql(&#34;&#34;&#34;
 SELECT  start_station_id first_station_id, start_station_name first_station_name, end_station_id second_station_id, end_station_name second_station_name,
         AVG(tripduration) avg_by_first_to_second_station
 FROM DATE_H_1
@@ -279,10 +278,9 @@ WHERE start_station_id &lt;= end_station_id
 GROUP BY start_station_id, start_station_name, end_station_id, end_station_name
 ORDER BY start_station_id, end_station_id
 &#34;&#34;&#34;)
-df_2.createOrReplaceTempView(&#34;first_to_second&#34;)
-incorta.show(df_2)</code></pre>
-<p class="image-container"><img style="width: 601.70px" src="img/68c35566fe735f95.png"></p>
-<p class="image-container"><img style="width: 601.70px" src="img/8effbe1fda08912f.png"></p>
+df2.createOrReplaceTempView(&#34;first_to_second&#34;)
+incorta.show(df2)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/2f156ef70f72f64d.png"></p>
 
 
       </google-codelab-step>
@@ -303,7 +301,24 @@ df3 = df.filter(&#34;start_station_id &lt;= end_station_id&#34;)\
 save(df3)
 incorta.show(df3)</code></pre>
 <p class="image-container"><img style="width: 601.70px" src="img/13604c04c23511f4.png"></p>
-<p class="image-container"><img style="width: 601.70px" src="img/3b230837e679218e.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/497a654d7273cf6f.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Table Data Comparison" duration="0">
+        <p>可以利用 <code>exceptAll()</code> 函數比較任意兩個資料表間不同的地方，若是完全相同，則不會出現任何資料</p>
+<h2 is-upgraded><strong>Example</strong></h2>
+<p>利用 <code>exceptAll()</code> 查看上面兩種方法是否相同，結果得出，df2 和 df3 是完全相同的資料表，因此不會有資料在 <code>table_diff</code> 中</p>
+<pre><code>%pyspark
+import pyspark.sql. functions as F
+df23_diff = df2.exceptAll(df3)
+df23_diff.withColumn(&#34;type&#34;, F.lit(&#34;DF2 not in DF3&#34;))
+df32_diff = df3.exceptAll(df2)
+df32_diff.withColumn(&#34;type&#34;, F.lit(&#34;DF3 not in DF2&#34;))
+table_diff = df23_diff.unionAll(df32_diff)
+incorta.show(table_diff)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/3f71aa46de8e9916.png"></p>
 
 
       </google-codelab-step>

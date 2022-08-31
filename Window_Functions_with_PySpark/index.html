@@ -1,0 +1,102 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Window Functions with PySpark</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="Window_Functions_with_PySpark"
+                  title="Window Functions with PySpark"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>這篇 Codelab 將會示範在 PySpark 中，如何運用 window functions</p>
+<p class="image-container"><img style="width: 601.70px" src="img/a8ae0e211171e142.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Window Functions - lag" duration="0">
+        <p>以之前找閒置時間為例子，比較window fuction 中的 <strong>lag</strong> 在 SQL 和 PySpark 中不同的用法</p>
+<h2 is-upgraded><strong>Example - SQL</strong></h2>
+<p>以 CitiBike 資料為例，為了找到單車的閒置時間，需要找到此單車前一次還車的車站和時間，利用 lag 函數可以根據 bikeid 分類找到前一次的還車時間和還車車站</p>
+<pre><code>%sql
+SELECT *
+FROM(
+    SELECT  bikeid, start_station_id, starttime_as_timestamp as this_trip_starttime, end_station_id, stoptime_as_timestamp, 
+            lag(stoptime_as_timestamp) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) previous_trip_stoptime ,
+            lag(end_station_id) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) previous_station_id
+    FROM NYC_CitiBike.DATE_HANDLING)
+WHERE this_trip_starttime &gt;= previous_trip_stoptime</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/e58c8f70e3fb07f6.png"></p>
+<h2 is-upgraded><strong>Example - PySpark</strong></h2>
+<pre><code>%pyspark
+from pyspark.sql.window import Window
+from pyspark.sql.functions import lag
+df1 = df.select(&#34;bikeid&#34;,&#34;start_station_id&#34;,&#34;starttime_as_timestamp&#34;,&#34;end_station_id&#34;,&#34;stoptime_as_timestamp&#34;)
+windowSpec1  = Window.partitionBy(&#34;bikeid&#34;).orderBy(&#34;starttime_as_timestamp&#34;)
+df1 = df1.withColumn(&#34;previous_trip_stoptime&#34;,lag(&#34;stoptime_as_timestamp&#34;,1).over(windowSpec1))
+df1 = df1.filter(&#34;starttime_as_timestamp &gt;= previous_trip_stoptime&#34;)
+df1 = df1.withColumn(&#34;previous_station_id&#34;,lag(&#34;end_station_id&#34;,1).over(windowSpec1))
+df1 = df1.withColumnRenamed(&#34;starttime_as_timestamp&#34;,&#34;this_trip_starttime&#34;)
+incorta.show(df1)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/58704d9e6ca66af7.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Window Functions - lead" duration="0">
+        <p>以 CitiBike 資料為例，為了找到單車的閒置時間，需要找到此單車使用前後的還車車站和時間以及下一次的借車車站和時間。前一個方法是利用 lag() 函數找到前一次的還車時間和還車車站，也可以利用 lead() 函數找到下一次的開始時間和開始車站</p>
+<h2 is-upgraded><strong>Example - SQL</strong></h2>
+<pre><code>%SQL
+SELECT *
+FROM(
+    SELECT  bikeid, start_station_id, starttime_as_timestamp as this_trip_starttime, end_station_id, stoptime_as_timestamp as this_trip_stoptime,
+            lead(starttime_as_timestamp) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) next_trip_starttime ,
+            lead(start_station_id) OVER(PARTITION BY bikeid ORDER BY starttime_as_timestamp) next_station_id
+    FROM NYC_CitiBike.DATE_HANDLING)
+WHERE this_trip_stoptime &gt;= next_trip_starttime</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/eca234b8b90b5daf.png"></p>
+<h2 is-upgraded><strong>Example - PySpark</strong></h2>
+<pre><code>%pyspark
+from pyspark.sql.functions import lead
+df2 = df.select(&#34;bikeid&#34;,&#34;start_station_id&#34;,&#34;starttime_as_timestamp&#34;,&#34;end_station_id&#34;,&#34;stoptime_as_timestamp&#34;)
+windowSpec2  = Window.partitionBy(&#34;bikeid&#34;).orderBy(&#34;starttime_as_timestamp&#34;)
+df2 = df2.withColumn(&#34;next_trip_starttime&#34;,lead(&#34;starttime_as_timestamp&#34;,1).over(windowSpec2))
+df2 = df2.filter(&#34;starttime_as_timestamp &gt;= next_trip_starttime&#34;)
+df2 = df2.withColumn(&#34;next_station_id&#34;,lead(&#34;start_station_id&#34;,1).over(windowSpec2))
+df2 = df2.withColumnRenamed(&#34;starttime_as_timestamp&#34;,&#34;this_trip_stoptime&#34;)
+incorta.show(df2)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/e6742b735cf77131.png"></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

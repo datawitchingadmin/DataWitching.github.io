@@ -28,3 +28,7 @@ Unit 9: [Transition from SQL to PySpark I](Transition_from_SQL_to_PySpark_I/)
 Unit 10: [Making Histograms with Incorta Notebook](Making_Histograms_with_Incorta_Notebook/)
 
 Unit 11: [Transition from SQL to PySpark II](Transition_from_SQL_to_PySpark_II/)
+
+Unit 12: [Window Functions with PySpark](Window_Functions_with_PySpark/)
+
+Unit 13: [Average Duration Between Two Stations](Average_Duration_Between_Two_Stations/)

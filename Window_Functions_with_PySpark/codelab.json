@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2022-08-31T04:17:31Z",
-  "id": "Transition_from_SQL_to_PySpark_II",
+  "updated": "2022-08-30T08:55:31Z",
+  "id": "Window_Functions_with_PySpark",
   "duration": 0,
-  "title": "Transition from SQL to PySpark II",
-  "summary": "In this codelab, you'll be able to learn how to do transition from SQL to PySpark.",
-  "source": "1mP4kc0m-bX1NT_bAvwrfPudY42o82jXhQIdD-M3SbRE",
+  "title": "Window Functions with PySpark",
+  "summary": "In this codelab, you'll be able to learn how to use window functions with pyspark.",
+  "source": "19QhUu7CsoNQzlc_kQxMTYwywU6skcSTdmpEIXkkWx1k",
   "theme": "web",
   "status": [
     "published"
@@ -33,5 +33,5 @@
     "typtwd17",
     "web"
   ],
-  "url": "Transition_from_SQL_to_PySpark_II"
+  "url": "Window_Functions_with_PySpark"
 }

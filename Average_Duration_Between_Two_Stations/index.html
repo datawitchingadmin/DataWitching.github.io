@@ -1,0 +1,147 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Average Duration Between Two Stations</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="Average_Duration_Between_Two_Stations"
+                  title="Average Duration Between Two Stations"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="Summary" duration="0">
+        <p>此篇 Codelab 將要藉由 NYC Citibike 資料，計算兩自行車站之間的平均使用時間，並且也藉由這個例子，比較 <strong>SQL</strong> 和 <strong>PySpark</strong> 中，JOIN 的不同寫法。</p>
+<p>這篇我們會用到 INNER JOIN 將從A站到B站的平均時間，和從B站到A站的平均時間，放到同一個資料表內，進行比較和探討差異的原因。</p>
+<p class="image-container"><img style="width: 601.70px" src="img/82ee30cd75251419.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="兩站之間的平均時間 - SQL" duration="0">
+        <h2 is-upgraded><strong>Step 1</strong></h2>
+<p>先分別列出 <code>start_station_id</code> , <code>start_station_name</code> , <code>end_station_id</code> , <code>end_station_name</code> 作為分組標準，將 start station 命名為 <strong>first station</strong> ，將 end station 命名為 <strong>second station</strong>，首先找到從 first station 到 second station 的平均租借時間，當作第一個資料表，並且僅篩選 <code>start_station_id</code> &lt;= <code>end_station_id</code> 的資料，以避免後面 JOIN 的時候重複。</p>
+<h2 is-upgraded><strong>Example - average duration by first to second station</strong></h2>
+<pre><code>%sql
+SELECT  start_station_id first_station_id, start_station_name first_station_name, end_station_id second_station_id, end_station_name second_station_name,
+        AVG(tripduration) avg_by_first_to_second_station
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE start_station_id &lt;= end_station_id
+GROUP BY start_station_id, start_station_name, end_station_id, end_station_name
+ORDER BY start_station_id, end_station_id</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/76cf5216bf0ce9f2.png"></p>
+<h2 is-upgraded><strong>Step 2</strong></h2>
+<p>第二步，再將 <code>start_station_id</code> , <code>start_station_name</code> , <code>end_station_id</code> , <code>end_station_name</code> 分別列出作為分組標準，將 start station 命名為 <strong>second station</strong> ，將 end station 命名為 <strong>first station</strong>，正好和前一個資料表相反，讓我可以找到同樣兩站但是方向相反的平均租借時間，找到從 second station 到 first station 的平均租借時間，當作第二個資料表，並且僅篩選 <code>start_station_id</code> &gt; <code>end_station_id</code> 的資料，以避免後面 JOIN 的時候重複。</p>
+<h2 is-upgraded><strong>Example - average duration by second to first station</strong></h2>
+<pre><code>%sql
+SELECT  start_station_id second_station_id, end_station_id first_station_id,
+        AVG(tripduration) avg_by_second_to_first_station
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE start_station_id &gt; end_station_id
+GROUP BY start_station_id, end_station_id</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/fc7807d520047bc7.png"></p>
+<h2 is-upgraded><strong>Step 3</strong></h2>
+<p>將前面兩步驟所做出來的資料表做 <strong>JOIN</strong> ，將兩資料表結合成一表，以利比較，最後再以 <code>avg_by_first_to_second_station</code> 作為排序標準，找出兩站間平均租間時間最短的組合，比較來回的時間差異，並且想藉由時間推估距離，再和地圖上實際距離作為比較，探討其中的差異</p>
+<h2 is-upgraded><strong>Example - JOIN</strong></h2>
+<pre><code>%sql
+SELECT t1.*, t2.avg_by_second_to_first_station
+FROM(
+SELECT  start_station_id first_station_id, start_station_name first_station_name, end_station_id second_station_id, end_station_name second_station_name,
+        AVG(tripduration) avg_by_first_to_second_station
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE start_station_id &lt;= end_station_id
+GROUP BY start_station_id, start_station_name, end_station_id, end_station_name) as t1
+INNER JOIN(
+SELECT  start_station_id second_station_id, end_station_id first_station_id,
+        AVG(tripduration) avg_by_second_to_first_station
+FROM NYC_CitiBike.DATE_HANDLING
+WHERE start_station_id &gt; end_station_id
+GROUP BY start_station_id, end_station_id) as t2
+ON t1.first_station_id = t2.first_station_id AND t1.second_station_id = t2.second_station_id
+ORDER BY avg_by_first_to_second_station</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/8ed7582709d49d64.png"></p>
+<p class="image-container"><img style="width: 601.70px" src="img/94af019a8457a3bd.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="兩站之間的平均時間 - PySpark" duration="0">
+        <h2 is-upgraded><strong>Step 1</strong></h2>
+<p>基本上利用同樣的方法，先篩選 <code>start_station_id</code> &lt;= <code>end_station_id</code> 的資料，以避免後面 JOIN 的時候重複，再分別列出 <code>start_station_id</code> , <code>start_station_name</code> , <code>end_station_id</code> , <code>end_station_name</code> 作為分組標準，將 start station 命名為 <strong>first station</strong> ，將 end station 命名為 <strong>second station</strong>，並且找到從 first station 到 second station 的平均租借時間，當作第一個資料表。</p>
+<h2 is-upgraded><strong>Example - average duration by first to second station</strong></h2>
+<pre><code>%pyspark
+df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df1 = df.filter(&#34;start_station_id &lt;= end_station_id&#34;)
+df1 = df1.groupBy(&#34;start_station_id&#34;, &#34;start_station_name&#34;, &#34;end_station_id&#34;, &#34;end_station_name&#34;).avg(&#34;tripduration&#34;)
+df1 = df1.withColumnRenamed(&#34;start_station_id&#34;, &#34;first_station_id&#34;)\
+         .withColumnRenamed(&#34;start_station_name&#34;, &#34;first_station_name&#34;)\
+         .withColumnRenamed(&#34;end_station_id&#34;, &#34;second_station_id&#34;)\
+         .withColumnRenamed(&#34;end_station_name&#34;, &#34;second_station_name&#34;)\
+         .withColumnRenamed(&#34;avg(tripduration)&#34;, &#34;avg_by_first_to_second_station&#34;)\
+         .sort(&#34;start_station_id&#34;, &#34;end_station_id&#34;)
+incorta.show(df1)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/fd14b9bb4a4beb87.png"></p>
+<h2 is-upgraded><strong>Step 2</strong></h2>
+<p>第二步，一樣先僅篩選 <code>start_station_id</code> &gt; <code>end_station_id</code> 的資料，以避免後面 JOIN 的時候重複，再將 <code>start_station_id</code> , <code>start_station_name</code> , <code>end_station_id</code> , <code>end_station_name</code> 分別列出作為分組標準，將 start station 命名為 <strong>second station</strong> ，將 end station 命名為 <strong>first station</strong>，正好和前一個資料表相反，讓我可以找到同樣兩站但是方向相反的平均租借時間，找到從 second station 到 first station 的平均租借時間，當作第二個資料表。</p>
+<h2 is-upgraded><strong>Example - average duration by second to first station</strong></h2>
+<pre><code>%pyspark
+df = read(&#34;NYC_CitiBike.DATE_HANDLING&#34;)
+df2 = df.filter(&#34;start_station_id &gt; end_station_id&#34;)
+df2 = df2.groupBy(&#34;start_station_id&#34;, &#34;end_station_id&#34;).avg(&#34;tripduration&#34;)
+df2 = df2.withColumnRenamed(&#34;start_station_id&#34;, &#34;second_station_id&#34;)\
+         .withColumnRenamed(&#34;end_station_id&#34;, &#34;first_station_id&#34;)\
+         .withColumnRenamed(&#34;avg(tripduration)&#34;, &#34;avg_by_second_to_first_station&#34;)\
+         .sort(&#34;start_station_id&#34;, &#34;end_station_id&#34;)
+incorta.show(df2)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/425bb18d3eca7f33.png"></p>
+<h2 is-upgraded><strong>Step 3</strong></h2>
+<p>將前面兩步驟所做出來的資料表做 <strong>JOIN</strong> ，將兩資料表結合成一表，以利比較，最後再以 <code>avg_by_first_to_second_station</code> 作為排序標準，找出兩站間平均租間時間最短的組合，比較來回的時間差異</p>
+<p><code>df1.join(df2, on, "how")</code></p>
+<p>可以用 help(df) 找到 join 的地方，有說如何使用 join 函數，以下有兩個例子供參考</p>
+<h2 is-upgraded><strong>Example - option 1</strong></h2>
+<pre><code>%pyspark
+cond = [df1.first_station_id ==  df2.first_station_id ,df1.second_station_id ==  df2.second_station_id ]
+df3 = df1.join(df2,cond, &#34;inner&#34;)
+incorta.show(df3)
+save(df3)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/a1989c1468f85b89.png"></p>
+<h2 is-upgraded><strong>Example - option 2</strong></h2>
+<p>當兩個要 join 的欄位名稱一樣的時候，就可以直接用這個方法進行 join</p>
+<p><code>on = [‘column1', ‘column2',..]</code></p>
+<pre><code>%pyspark
+# option 2
+df3 = df1.join(df2,on=[&#39;first_station_id&#39;,&#39;second_station_id&#39;], how=&#34;inner&#34;)
+incorta.show(df3)</code></pre>
+<p class="image-container"><img style="width: 601.70px" src="img/88e55736c0d9f07d.png"></p>
+<p>比較來回的時間差異後，除了了解來回時間差的原因外，我們也想藉由<strong>時間</strong>推估<strong>距離</strong>，再和地圖上實際距離作為比較，探討其中的差異</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

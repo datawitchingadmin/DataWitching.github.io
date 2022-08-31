@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2022-08-31T04:17:31Z",
-  "id": "Transition_from_SQL_to_PySpark_II",
+  "updated": "2022-08-30T18:09:31Z",
+  "id": "Average_Duration_Between_Two_Stations",
   "duration": 0,
-  "title": "Transition from SQL to PySpark II",
-  "summary": "In this codelab, you'll be able to learn how to do transition from SQL to PySpark.",
-  "source": "1mP4kc0m-bX1NT_bAvwrfPudY42o82jXhQIdD-M3SbRE",
+  "title": "Average Duration Between Two Stations",
+  "summary": "In this codelab, you'll be able to analyze the average duration between two stations by both ways.",
+  "source": "1hrKM87rt1zVf54ATjvYqzU5AS0zkAs1xBrtR7Z5aoLE",
   "theme": "web",
   "status": [
     "published"
@@ -33,5 +33,5 @@
     "typtwd17",
     "web"
   ],
-  "url": "Transition_from_SQL_to_PySpark_II"
+  "url": "Average_Duration_Between_Two_Stations"
 }
